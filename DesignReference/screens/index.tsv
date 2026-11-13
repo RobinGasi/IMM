@@ -1,0 +1,62 @@
+app-1-overview-desktop	n_fzdix0p7	App / 1 Overview — Desktop
+app-2-transactions-desktop	n_wq1h7cg3	App / 2 Transactions — Desktop
+app-3-transaction-detail-desktop	n_y854xfha	App / 3 Transaction detail — Desktop
+app-4-new-transfer-desktop	n_6e0v0189	App / 4 New transfer — Desktop
+app-5-categories-desktop	n_6lv4pncf	App / 5 Categories — Desktop
+app-6-budgets-desktop	n_9s8jl1au	App / 6 Budgets — Desktop
+app-7-standing-orders-desktop	n_7300v75c	App / 7 Standing orders — Desktop
+app-8-contracts-desktop	n_p1c0xxya	App / 8 Contracts — Desktop
+app-9-depot-desktop	n_x9gqw99e	App / 9 Depot — Desktop
+app-10-ask-desktop	n_t1x3wkix	App / 10 Ask — Desktop
+app-11-suggestions-desktop	n_wpy088fr	App / 11 Suggestions — Desktop
+app-12-october-review-desktop	n_5q6qpc0e	App / 12 October review — Desktop
+app-13-pay-invoice-desktop	n_8epsflt5	App / 13 Pay invoice — Desktop
+app-14-tax-return-desktop	n_yxu3vl0j	App / 14 Tax return — Desktop
+states-all-transactions-desktop	n_q9vqwum7	States / All transactions — Desktop
+states-transfer-waiting-desktop	n_hlh3cfiz	States / Transfer — waiting — Desktop
+states-transfer-booked-desktop	n_et2lms7n	States / Transfer — booked — Desktop
+states-sync-in-progress-desktop	n_ube1jxfc	States / Sync — in progress — Desktop
+states-sync-failed-banner-only-desktop	n_u1f8igf5	States / Sync failed — banner only — Desktop
+states-pin-sheet-empty-desktop	n_f89yajdq	States / PIN sheet — empty — Desktop
+states-option-lists-desktop	n_883svhqt	States / Option lists — Desktop
+states-create-vault-errors-setup	n_9fcashha	States / Create vault — Errors — Setup
+states-create-vault-empty-setup	n_uomyj3au	States / Create vault — Empty — Setup
+dark-2-transactions-desktop	n_5y4mp0qh	Dark / 2 Transactions — Desktop
+compact-1-overview-desktop	n_osifiejo	Compact / 1 Overview — Desktop
+compact-2-transactions-desktop	n_yipzdxyt	Compact / 2 Transactions — Desktop
+compact-6-budgets-desktop	n_nlx1u872	Compact / 6 Budgets — Desktop
+compact-9-depot-desktop	n_b95ymius	Compact / 9 Depot — Desktop
+onboarding-1-create-vault-setup	n_m4xea4u3	Onboarding / 1 Create vault — Setup
+onboarding-2-add-bank-setup	n_7j32dojg	Onboarding / 2 Add bank — Setup
+onboarding-3-bank-login-setup	n_11tij1t3	Onboarding / 3 Bank login — Setup
+states-create-vault-creating-setup	n_nkhep7y6	States / Create vault — Creating — Setup
+settings-preferences-mac	n_e3ks8go0	Settings / Preferences — Mac
+states-settings-sync-off-mac	n_en1p202w	States / Settings — Sync Off — Mac
+states-settings-no-pins-mac	n_dan92elr	States / Settings — No PINs — Mac
+security-unlock-setup	n_m96c6srm	Security / Unlock — Setup
+states-unlock-wrong-password-setup	n_u5vo4yvf	States / Unlock — Wrong password — Setup
+errors-1-sync-failed-desktop	n_qw4askzj	Errors / 1 Sync failed — Desktop
+errors-2-tan-expired-desktop	n_nxv0ibll	Errors / 2 TAN expired — Desktop
+icons-app-icon	n_mymub0pb	Icons / App icon
+icons-document-icon	n_rp6j4epg	Icons / Document icon
+states-create-vault-touch-id-unavailable-setup	n_q6cu2hkl	States / Create vault — Touch ID unavailable — Setup
+states-create-vault-no-touch-id-setup	n_xzm1h0wq	States / Create vault — No Touch ID — Setup
+states-create-vault-synced-folder-setup	n_a5ruldk5	States / Create vault — Synced folder — Setup
+states-bank-login-before-sign-in-setup	n_p1rwtl8b	States / Bank login — Before sign-in — Setup
+states-bank-login-waiting-setup	n_syq2a010	States / Bank login — Waiting — Setup
+states-unlock-no-touch-id-setup	n_8cprl2q9	States / Unlock — No Touch ID — Setup
+states-unlock-fingerprints-changed-setup	n_zomwbnbm	States / Unlock — Fingerprints changed — Setup
+states-unlock-subtitles-setup	n_wlmzx2wi	States / Unlock — Subtitles — Setup
+states-database-not-found-setup	n_8d748avn	States / Database not found — Setup
+states-settings-touch-id-unavailable-mac	n_amrcdxr5	States / Settings — Touch ID unavailable — Mac
+states-settings-auto-lock-options-mac	n_31z2vsc6	States / Settings — Auto-lock options — Mac
+states-settings-change-password-errors-mac	n_nvpyv28q	States / Settings — Change password errors — Mac
+states-settings-change-password-mac	n_v1452hb9	States / Settings — Change password — Mac
+states-settings-sync-tailscale-not-running-mac	n_g8mxtev7	States / Settings — Sync Tailscale not running — Mac
+states-settings-sync-on-no-devices-mac	n_emecw6dr	States / Settings — Sync On, no devices — Mac
+states-settings-sync-pairing-mac	n_fab9uu3b	States / Settings — Sync Pairing — Mac
+states-settings-sync-confirm-code-mac	n_gfi4i71l	States / Settings — Sync Confirm code — Mac
+states-settings-sync-on-devices-mac	n_v8bsxvud	States / Settings — Sync On, devices — Mac
+states-sync-status-lines-desktop	n_zmfz5smz	States / Sync status lines — Desktop
+iphone-pair-scan	n_4fjhwiml	iPhone / Pair — Scan
+iphone-pair-confirm	n_y5ayhwtt	iPhone / Pair — Confirm

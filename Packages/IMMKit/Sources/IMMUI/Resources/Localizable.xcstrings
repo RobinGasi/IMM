@@ -1,0 +1,2015 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    " since %@" : {
+
+    },
+    " since %@, of which %@ paid in by the savings plan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : " since %1$@, of which %2$@ paid in by the savings plan"
+          }
+        }
+      }
+    },
+    "%@ (due date)" : {
+
+    },
+    "%@ a year" : {
+
+    },
+    "%@ a year, %lld %% of your net salary" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ a year, %2$lld %% of your net salary"
+          }
+        }
+      }
+    },
+    "%@ and %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ and %2$@"
+          }
+        }
+      }
+    },
+    "%@ balance from %@ to %@, based on your recurring payments" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ balance from %2$@ to %3$@, based on your recurring payments"
+          }
+        }
+      }
+    },
+    "%@ can no longer sync with this Mac. IMM changes the sync key on your other devices." : {
+
+    },
+    "%@ can't be found" : {
+
+    },
+    "%@ couldn't be reached. " : {
+
+    },
+    "%@ couldn't be removed." : {
+
+    },
+    "%@ couldn't be updated. " : {
+
+    },
+    "%@ from %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ from %2$@"
+          }
+        }
+      }
+    },
+    "%@ in the ledger" : {
+
+    },
+    "%@ is locked" : {
+
+    },
+    "%@ is on its way to %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is on its way to %2$@."
+          }
+        }
+      }
+    },
+    "%@ is under maintenance until %@. " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is under maintenance until %2$@. "
+          }
+        }
+      }
+    },
+    "%@ monthly on the %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ monthly on the %2$@"
+          }
+        }
+      }
+    },
+    "%@ more a month, %@ more a year." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ more a month, %2$@ more a year."
+          }
+        }
+      }
+    },
+    "%@ on %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ on %2$@"
+          }
+        }
+      }
+    },
+    "%@ outlook" : {
+
+    },
+    "%@ raises the price to %@ from %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ raises the price to %2$@ from %3$@"
+          }
+        }
+      }
+    },
+    "%@ rejected your PIN." : {
+
+    },
+    "%@ renews %@ — cancel by " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ renews %2$@ — cancel by "
+          }
+        }
+      }
+    },
+    "%@ review" : {
+
+    },
+    "%@ since %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ since %2$@"
+          }
+        }
+      }
+    },
+    "%@ so far" : {
+
+    },
+    "%@ to %@ is scheduled for %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ to %2$@ is scheduled for %3$@."
+          }
+        }
+      }
+    },
+    "%@ was the most expensive month at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ was the most expensive month at %2$@"
+          }
+        }
+      }
+    },
+    "%@ wasn't updated since %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ wasn't updated since %2$@."
+          }
+        }
+      }
+    },
+    "%@ wasn't updated." : {
+
+    },
+    "%@ weren't updated since %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ weren't updated since %2$@."
+          }
+        }
+      }
+    },
+    "%@ weren't updated." : {
+
+    },
+    "%@ · %lld days left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld days left"
+          }
+        }
+      }
+    },
+    "%@ · so far" : {
+
+    },
+    "%@ · synced with your bank" : {
+
+    },
+    "%@ – %@ · your monthly average is %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@ · your monthly average is %3$@"
+          }
+        }
+      }
+    },
+    "%@ — cancel by " : {
+
+    },
+    "%@, until %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, until %2$@"
+          }
+        }
+      }
+    },
+    "%lld %% of your monthly average of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %% of your monthly average of %2$@"
+          }
+        }
+      }
+    },
+    "%lld %% of your monthly average of %@, with %lld days to go" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %% of your monthly average of %2$@, with %3$lld days to go"
+          }
+        }
+      }
+    },
+    "%lld %% of your monthly average of %@, with 1 day to go" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %% of your monthly average of %2$@, with 1 day to go"
+          }
+        }
+      }
+    },
+    "%lld ETFs" : {
+
+    },
+    "%lld ETFs and cash" : {
+
+    },
+    "%lld PINs stored in macOS Keychain" : {
+
+    },
+    "%lld accounts" : {
+
+    },
+    "%lld accounts found" : {
+
+    },
+    "%lld accounts not updated" : {
+
+    },
+    "%lld accounts, without Depot" : {
+
+    },
+    "%lld active standing orders · one-off and paused not included" : {
+
+    },
+    "%lld banks" : {
+
+    },
+    "%lld days left to give notice. Otherwise the %@ runs another year at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld days left to give notice. Otherwise the %2$@ runs another year at %3$@."
+          }
+        }
+      }
+    },
+    "%lld forms" : {
+
+    },
+    "%lld funds" : {
+
+    },
+    "%lld funds and the cash account" : {
+
+    },
+    "%lld holdings" : {
+
+    },
+    "%lld holdings and cash" : {
+
+    },
+    "%lld items" : {
+
+    },
+    "%lld items from %@, %lld with receipts" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld items from %2$@, %3$lld with receipts"
+          }
+        }
+      }
+    },
+    "%lld min ago" : {
+
+    },
+    "%lld new" : {
+
+    },
+    "%lld of %lld budgets over their limit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld budgets over their limit"
+          }
+        }
+      }
+    },
+    "%lld of %lld selected" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld selected"
+          }
+        }
+      }
+    },
+    "%lld of %lld updated today" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld updated today"
+          }
+        }
+      }
+    },
+    "%lld orders" : {
+
+    },
+    "%lld payments" : {
+
+    },
+    "%lld rules file your transactions automatically" : {
+
+    },
+    "%lld s ago" : {
+
+    },
+    "%lld so far" : {
+
+    },
+    "%lld transactions" : {
+
+    },
+    "%lld transactions without a category" : {
+
+    },
+    "01.01.2025 (as far as the bank allows)" : {
+
+    },
+    "01.01.2026" : {
+
+    },
+    "1 PIN stored in macOS Keychain" : {
+
+    },
+    "1 account" : {
+
+    },
+    "1 account found" : {
+
+    },
+    "1 account not updated" : {
+
+    },
+    "1 active standing order · one-off and paused not included" : {
+
+    },
+    "1 bank" : {
+
+    },
+    "1 form" : {
+
+    },
+    "1 item" : {
+
+    },
+    "1 of %lld budgets over its limit" : {
+
+    },
+    "1 order" : {
+
+    },
+    "1 rule files your transactions automatically" : {
+
+    },
+    "1 transaction" : {
+
+    },
+    "1 transaction without a category" : {
+
+    },
+    "6-month average" : {
+
+    },
+    "A database with this name already exists. Choose another name." : {
+
+    },
+    "Accept" : {
+
+    },
+    "Accept %lld sure suggestions" : {
+
+    },
+    "Account" : {
+
+    },
+    "Accounts" : {
+
+    },
+    "Active" : {
+
+    },
+    "Add a fingerprint in System Settings to use Touch ID." : {
+
+    },
+    "Add a note" : {
+
+    },
+    "Add contract manually" : {
+
+    },
+    "Add your first account" : {
+
+    },
+    "After 1 hour of inactivity" : {
+
+    },
+    "After 1 minute of inactivity" : {
+
+    },
+    "After 15 minutes of inactivity" : {
+
+    },
+    "After 5 minutes of inactivity" : {
+
+    },
+    "All" : {
+
+    },
+    "All accounts · %@ – %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "All accounts · %1$@ – %2$@"
+          }
+        }
+      }
+    },
+    "All accounts · closed %@" : {
+
+    },
+    "All categories" : {
+
+    },
+    "All time" : {
+
+    },
+    "All transactions" : {
+
+    },
+    "All your accounts." : {
+
+    },
+    "Allocation by region" : {
+
+    },
+    "Allow IMM in System Settings › Login Items, then sync starts." : {
+
+    },
+    "Also noticed" : {
+
+    },
+    "Always file %@ under %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Always file %1$@ under %2$@"
+          }
+        }
+      }
+    },
+    "Amount" : {
+
+    },
+    "Anmeldename at %@" : {
+
+    },
+    "Applies to %lld earlier transactions" : {
+
+    },
+    "Applies to 1 earlier transaction" : {
+
+    },
+    "Approve on iPhone" : {
+
+    },
+    "Approved on iPhone" : {
+
+    },
+    "Approves" : {
+
+    },
+    "Arrives within 10 seconds" : {
+
+    },
+    "Ask or Search" : {
+
+    },
+    "Ask or search" : {
+
+    },
+    "At least 8 characters" : {
+
+    },
+    "Attach receipt" : {
+
+    },
+    "Available %@ incl. overdraft" : {
+
+    },
+    "Available again at %@" : {
+
+    },
+    "Average %@" : {
+
+    },
+    "Back" : {
+
+    },
+    "Balance" : {
+
+    },
+    "Balance over the last 90 days" : {
+
+    },
+    "Balance today, %@" : {
+
+    },
+    "Bank" : {
+
+    },
+    "Bank name, city, BLZ or BIC" : {
+
+    },
+    "Banking PINs:" : {
+
+    },
+    "Booked" : {
+
+    },
+    "Booking text" : {
+
+    },
+    "Budgets" : {
+
+    },
+    "Can't find your bank? Search by BLZ or BIC." : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Cancel transfer" : {
+
+    },
+    "Card payment" : {
+
+    },
+    "Cash" : {
+
+    },
+    "Cash account" : {
+
+    },
+    "Cash withdrawal" : {
+
+    },
+    "Categories" : {
+
+    },
+    "Category" : {
+
+    },
+    "Change" : {
+
+    },
+    "Change TAN method" : {
+
+    },
+    "Change database password" : {
+
+    },
+    "Change password" : {
+
+    },
+    "Change password…" : {
+
+    },
+    "Changes are sent to your bank and confirmed with pushTAN." : {
+
+    },
+    "Check for Updates…" : {
+
+    },
+    "Check that %@ shows the same code." : {
+
+    },
+    "Check that the other device shows the same code." : {
+
+    },
+    "Check this" : {
+
+    },
+    "Check your connection, then press Retry now." : {
+
+    },
+    "Choose another folder" : {
+
+    },
+    "Choose where to keep your encrypted database." : {
+
+    },
+    "Choose which accounts IMM should import." : {
+
+    },
+    "Close inspector" : {
+
+    },
+    "Closing balance %@" : {
+
+    },
+    "Closing balance 31.10.2026" : {
+
+    },
+    "Codes don't match" : {
+
+    },
+    "Codes match" : {
+
+    },
+    "Coming up" : {
+
+    },
+    "Confirm in S-pushTAN" : {
+
+    },
+    "Confirm new password" : {
+
+    },
+    "Confirm pairing" : {
+
+    },
+    "Confirm password" : {
+
+    },
+    "Confirmation code %@" : {
+
+    },
+    "Confirmed in S-pushTAN at %@" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Contract" : {
+
+    },
+    "Contracts" : {
+
+    },
+    "Cost basis %@" : {
+
+    },
+    "Count" : {
+
+    },
+    "Create" : {
+
+    },
+    "Create Database" : {
+
+    },
+    "Create database" : {
+
+    },
+    "Create new database" : {
+
+    },
+    "Creating database…" : {
+
+    },
+    "Credit card" : {
+
+    },
+    "Creditor ID" : {
+
+    },
+    "Current password" : {
+
+    },
+    "Database password" : {
+
+    },
+    "Database:" : {
+
+    },
+    "Date" : {
+
+    },
+    "Debited from %@" : {
+
+    },
+    "Debug" : {
+
+    },
+    "Demo bank approval" : {
+
+    },
+    "Demo bank sync" : {
+
+    },
+    "Depot" : {
+
+    },
+    "Depot value" : {
+
+    },
+    "Depot value over time" : {
+
+    },
+    "Detected from recurring payments" : {
+
+    },
+    "Devices:" : {
+
+    },
+    "Didn't get a notification? Open S-pushTAN on your iPhone and pull to refresh." : {
+
+    },
+    "Direct debit" : {
+
+    },
+    "Done" : {
+
+    },
+    "Each value is marked on the page with its number." : {
+
+    },
+    "Edit rules" : {
+
+    },
+    "Edit savings plan" : {
+
+    },
+    "Einkommensteuererklärung · 1 Jan – 31 Dec %@" : {
+
+    },
+    "Encrypted on this Mac" : {
+
+    },
+    "Encrypted with your database password" : {
+
+    },
+    "Encryption:" : {
+
+    },
+    "Enter a date from today on, like 20.11.2026." : {
+
+    },
+    "Enter new PIN" : {
+
+    },
+    "Enter your Online-Banking PIN" : {
+
+    },
+    "Estimated from each fund's country weights" : {
+
+    },
+    "Excluded" : {
+
+    },
+    "Excluded this month" : {
+
+    },
+    "Execute" : {
+
+    },
+    "Execute on" : {
+
+    },
+    "Execution date" : {
+
+    },
+    "Expired %@" : {
+
+    },
+    "Expires" : {
+
+    },
+    "Expires %@" : {
+
+    },
+    "Expires in %@" : {
+
+    },
+    "Export" : {
+
+    },
+    "Export as PDF" : {
+
+    },
+    "Export for ELSTER (CSV + PDFs)" : {
+
+    },
+    "Fails" : {
+
+    },
+    "Fetch transactions since" : {
+
+    },
+    "FinTS online banking" : {
+
+    },
+    "First on" : {
+
+    },
+    "Fixed costs" : {
+
+    },
+    "Fixed costs per month" : {
+
+    },
+    "Fixed costs per month, %lld contracts" : {
+
+    },
+    "Forecast of the account balance" : {
+
+    },
+    "From" : {
+
+    },
+    "From %@" : {
+
+    },
+    "From %@ %@ to %@ %@, lowest %@, highest %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "From %1$@ %2$@ to %3$@ %4$@, lowest %5$@, highest %6$@."
+          }
+        }
+      }
+    },
+    "From %@ at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "From %1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "From your account" : {
+
+    },
+    "Gain/loss" : {
+
+    },
+    "General" : {
+
+    },
+    "Girokonto" : {
+
+    },
+    "Hide balances in the menu bar" : {
+
+    },
+    "Holdings" : {
+
+    },
+    "IBAN" : {
+
+    },
+    "IBAN read from a PDF — compare it with the invoice." : {
+
+    },
+    "IMM looked for it in" : {
+
+    },
+    "IMM suggests a category for each. Accept what looks right; you can change it later." : {
+
+    },
+    "IMM syncs when you press Sync." : {
+
+    },
+    "IMM talks to your bank directly via FinTS, with no third party in between." : {
+
+    },
+    "IMM talks to your banks directly via FinTS. Your data stays in an encrypted file on this Mac — no cloud account, no tracking." : {
+
+    },
+    "IMM will ask for your online-banking PIN the next time it syncs." : {
+
+    },
+    "IMM's sync helper needs your approval." : {
+
+    },
+    "Import %lld accounts" : {
+
+    },
+    "Import 1 account" : {
+
+    },
+    "Includes balances from %@ for %lld accounts" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Includes balances from %1$@ for %2$lld accounts"
+          }
+        }
+      }
+    },
+    "Includes balances from %@ for 1 account" : {
+
+    },
+    "Income" : {
+
+    },
+    "Instant payment" : {
+
+    },
+    "Instant payment (SEPA Instant)" : {
+
+    },
+    "Interest" : {
+
+    },
+    "It may have been moved, renamed or deleted." : {
+
+    },
+    "Last 30 days" : {
+
+    },
+    "Last 90 days" : {
+
+    },
+    "Last full sync %@" : {
+
+    },
+    "Last month" : {
+
+    },
+    "Last opened %@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Last opened %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Last opened today, %@" : {
+
+    },
+    "Last opened yesterday, %@" : {
+
+    },
+    "Leaves %@ at today's balance." : {
+
+    },
+    "Leaving %@ by %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Leaving %1$@ by %2$@"
+          }
+        }
+      }
+    },
+    "Likely" : {
+
+    },
+    "Listening on" : {
+
+    },
+    "Locate…" : {
+
+    },
+    "Lock Database" : {
+
+    },
+    "Lock automatically:" : {
+
+    },
+    "Lock when the Mac goes to sleep" : {
+
+    },
+    "Locked" : {
+
+    },
+    "Locked automatically after %lld hours of inactivity." : {
+
+    },
+    "Locked automatically after %lld minutes of inactivity." : {
+
+    },
+    "Locked automatically after 1 hour of inactivity." : {
+
+    },
+    "Locked automatically after 1 minute of inactivity." : {
+
+    },
+    "Locked when your Mac went to sleep." : {
+
+    },
+    "Login name from your bank" : {
+
+    },
+    "Manual account" : {
+
+    },
+    "Marker shows expected spending by today, day %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Marker shows expected spending by today, day %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Month" : {
+
+    },
+    "Monthly" : {
+
+    },
+    "Monthly average" : {
+
+    },
+    "Monthly average of the last 11 complete months" : {
+
+    },
+    "Monthly on the %@" : {
+
+    },
+    "Monthly spending by category, %@ to %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Monthly spending by category, %1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "Monthly total" : {
+
+    },
+    "Name" : {
+
+    },
+    "Needs attention" : {
+
+    },
+    "Needs receipt (%lld)" : {
+
+    },
+    "Net in %@" : {
+
+    },
+    "Net worth" : {
+
+    },
+    "Net worth over the last 12 months" : {
+
+    },
+    "Net worth, all %lld accounts" : {
+
+    },
+    "Never" : {
+
+    },
+    "New Transfer" : {
+
+    },
+    "New budget" : {
+
+    },
+    "New password" : {
+
+    },
+    "New standing order" : {
+
+    },
+    "New transfer" : {
+
+    },
+    "Next debit" : {
+
+    },
+    "Next execution " : {
+
+    },
+    "Next execution ↓" : {
+
+    },
+    "No PINs stored in macOS Keychain" : {
+
+    },
+    "No bank matches your search." : {
+
+    },
+    "No budget over its limit" : {
+
+    },
+    "No earlier transactions" : {
+
+    },
+    "No fingerprint is set up on this Mac." : {
+
+    },
+    "No other devices yet." : {
+
+    },
+    "No transactions match these filters." : {
+
+    },
+    "Not available in this version" : {
+
+    },
+    "Not started" : {
+
+    },
+    "Not synced yet" : {
+
+    },
+    "Not synced yet · via %@" : {
+
+    },
+    "Not updated since %@" : {
+
+    },
+    "Not updated yet" : {
+
+    },
+    "Notes" : {
+
+    },
+    "Nothing is excluded." : {
+
+    },
+    "Nothing left this Mac" : {
+
+    },
+    "Nothing was sent — your money is still in your account." : {
+
+    },
+    "Notice period" : {
+
+    },
+    "Now" : {
+
+    },
+    "OK" : {
+
+    },
+    "Offline" : {
+
+    },
+    "On date" : {
+
+    },
+    "Once" : {
+
+    },
+    "One ledger on your Mac." : {
+
+    },
+    "Online-Banking PIN" : {
+
+    },
+    "Online-banking PIN" : {
+
+    },
+    "Open Database" : {
+
+    },
+    "Open Database…" : {
+
+    },
+    "Open Login Items…" : {
+
+    },
+    "Open S-pushTAN on your phone and approve this transfer." : {
+
+    },
+    "Open Tailscale and sign in, then IMM starts listening on your tailnet." : {
+
+    },
+    "Open existing database…" : {
+
+    },
+    "Over by %@" : {
+
+    },
+    "Overview" : {
+
+    },
+    "PIN" : {
+
+    },
+    "PIN rejected" : {
+
+    },
+    "Paid from %@." : {
+
+    },
+    "Pair another device" : {
+
+    },
+    "Pair another device…" : {
+
+    },
+    "Pairing QR code" : {
+
+    },
+    "Pairing couldn't start." : {
+
+    },
+    "Pairing didn't finish." : {
+
+    },
+    "Paused" : {
+
+    },
+    "Pay %@ today" : {
+
+    },
+    "Pay an invoice" : {
+
+    },
+    "PayPal & wallets" : {
+
+    },
+    "Payee" : {
+
+    },
+    "Payee and purpose" : {
+
+    },
+    "Payment scheduled" : {
+
+    },
+    "Per month" : {
+
+    },
+    "Performance" : {
+
+    },
+    "Planning" : {
+
+    },
+    "Possible deductions" : {
+
+    },
+    "Press Retry now when it is back." : {
+
+    },
+    "Price" : {
+
+    },
+    "Purpose" : {
+
+    },
+    "Quantity" : {
+
+    },
+    "Quarter" : {
+
+    },
+    "Quarterly" : {
+
+    },
+    "Question" : {
+
+    },
+    "Read from the invoice" : {
+
+    },
+    "Receipt" : {
+
+    },
+    "Received in %@" : {
+
+    },
+    "Recipient" : {
+
+    },
+    "Remaining" : {
+
+    },
+    "Remove" : {
+
+    },
+    "Remove %@" : {
+
+    },
+    "Remove %@?" : {
+
+    },
+    "Remove %lld stored PINs?" : {
+
+    },
+    "Remove 1 stored PIN?" : {
+
+    },
+    "Remove stored PINs…" : {
+
+    },
+    "Remove…" : {
+
+    },
+    "Rent, electricity and contracts leave by standing order, so they stay outside your budgets." : {
+
+    },
+    "Request failed" : {
+
+    },
+    "Retry at %@" : {
+
+    },
+    "Retry now" : {
+
+    },
+    "Review one by one" : {
+
+    },
+    "Rhythm" : {
+
+    },
+    "Roll over unused amounts" : {
+
+    },
+    "SEPA transfer" : {
+
+    },
+    "Salary" : {
+
+    },
+    "Salary %@ leaves you %@ a month, %lld %% of what comes in" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Salary %1$@ leaves you %2$@ a month, %3$lld %% of what comes in"
+          }
+        }
+      }
+    },
+    "Saved" : {
+
+    },
+    "Saved recipient, IBAN filled in from your last transfer" : {
+
+    },
+    "Savings plan" : {
+
+    },
+    "Scan this code with IMM on your iPhone, or enter the pairing code on another Mac." : {
+
+    },
+    "Schedule" : {
+
+    },
+    "Schedule %@ for %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Schedule %1$@ for %2$@"
+          }
+        }
+      }
+    },
+    "Scheduled" : {
+
+    },
+    "Scheduled for %@" : {
+
+    },
+    "Search transactions" : {
+
+    },
+    "Securities" : {
+
+    },
+    "Security" : {
+
+    },
+    "Send" : {
+
+    },
+    "Send %@ €" : {
+
+    },
+    "Send a new request" : {
+
+    },
+    "Sent to bank" : {
+
+    },
+    "Set reminder" : {
+
+    },
+    "Set up IMM" : {
+
+    },
+    "Settings…" : {
+
+    },
+    "Shaded: the likely range." : {
+
+    },
+    "Share of average" : {
+
+    },
+    "Share of month" : {
+
+    },
+    "Share of quarter" : {
+
+    },
+    "Share with tax advisor…" : {
+
+    },
+    "Show all" : {
+
+    },
+    "Show in Finder" : {
+
+    },
+    "Show payments" : {
+
+    },
+    "Sign in" : {
+
+    },
+    "Sign in to %@" : {
+
+    },
+    "Sign in to see your accounts." : {
+
+    },
+    "Sources" : {
+
+    },
+    "Spending" : {
+
+    },
+    "Spending by month" : {
+
+    },
+    "Spent %@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spent %1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "Spent / limit" : {
+
+    },
+    "Spent in %@" : {
+
+    },
+    "Spent so far" : {
+
+    },
+    "Spent this month" : {
+
+    },
+    "Split transaction" : {
+
+    },
+    "Standing order" : {
+
+    },
+    "Standing order, first on %@" : {
+
+    },
+    "Standing orders" : {
+
+    },
+    "Standing orders and direct debits." : {
+
+    },
+    "Starting…" : {
+
+    },
+    "Status" : {
+
+    },
+    "Status:" : {
+
+    },
+    "Step 1 of 3" : {
+
+    },
+    "Step 2 of 3" : {
+
+    },
+    "Step 3 of 3" : {
+
+    },
+    "Store PIN in macOS Keychain" : {
+
+    },
+    "Succeeds" : {
+
+    },
+    "Suggested category" : {
+
+    },
+    "Suggested next steps" : {
+
+    },
+    "Suggestions" : {
+
+    },
+    "Sure" : {
+
+    },
+    "Sync" : {
+
+    },
+    "Sync all accounts" : {
+
+    },
+    "Sync over Tailscale" : {
+
+    },
+    "Sync paused — Tailscale isn't connected" : {
+
+    },
+    "Sync paused — see Settings" : {
+
+    },
+    "Sync paused — waiting for your approval in Login Items" : {
+
+    },
+    "Sync with new PIN" : {
+
+    },
+    "Sync your ledger with your other devices over Tailscale. IMM never listens on your Wi-Fi." : {
+
+    },
+    "Sync:" : {
+
+    },
+    "Synced %@" : {
+
+    },
+    "Synced %@ · via %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Synced %1$@ · via %2$@"
+          }
+        }
+      }
+    },
+    "Synced with %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Synced with %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Syncing an open database can corrupt it. Choose a folder that is not synced, or continue if you only open the database on this Mac." : {
+
+    },
+    "Syncing with %@" : {
+
+    },
+    "Syncing…" : {
+
+    },
+    "TAN method" : {
+
+    },
+    "Tailscale isn't connected on this Mac." : {
+
+    },
+    "Tax return %@" : {
+
+    },
+    "The approval request expired after 5 minutes." : {
+
+    },
+    "The approval request expired." : {
+
+    },
+    "The bank is under maintenance." : {
+
+    },
+    "The bank rejected this PIN (error %@). After 3 wrong attempts the bank locks online banking; you have %lld left." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The bank rejected this PIN (error %1$@). After 3 wrong attempts the bank locks online banking; you have %2$lld left."
+          }
+        }
+      }
+    },
+    "The bank rejected this PIN (error %lld). %lld attempts left." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The bank rejected this PIN (error %1$lld). %2$lld attempts left."
+          }
+        }
+      }
+    },
+    "The change could not be saved." : {
+
+    },
+    "The database could not be opened." : {
+
+    },
+    "The database couldn't be created: %@" : {
+
+    },
+    "The password couldn't be changed." : {
+
+    },
+    "The passwords don't match." : {
+
+    },
+    "The payment appears in your %@ as soon as the bank books it." : {
+
+    },
+    "The request stays valid for 5 minutes." : {
+
+    },
+    "This IBAN is not valid. Check the digits." : {
+
+    },
+    "This Mac has no Touch ID." : {
+
+    },
+    "This folder is synced by a cloud service." : {
+
+    },
+    "This is not a valid IBAN." : {
+
+    },
+    "This month" : {
+
+    },
+    "This quarter" : {
+
+    },
+    "This year" : {
+
+    },
+    "To" : {
+
+    },
+    "Today" : {
+
+    },
+    "Today " : {
+
+    },
+    "Today %@" : {
+
+    },
+    "Today, %@" : {
+
+    },
+    "Total" : {
+
+    },
+    "Total %@" : {
+
+    },
+    "Total depot value, %@" : {
+
+    },
+    "Total spending" : {
+
+    },
+    "Touch ID" : {
+
+    },
+    "Touch ID couldn't be changed." : {
+
+    },
+    "Touch ID needs a signed build of IMM." : {
+
+    },
+    "Touch ID to unlock" : {
+
+    },
+    "Transfer" : {
+
+    },
+    "Transfer booked" : {
+
+    },
+    "Transfer not sent" : {
+
+    },
+    "Type" : {
+
+    },
+    "Type the password again" : {
+
+    },
+    "Type your database password" : {
+
+    },
+    "Unlock" : {
+
+    },
+    "Unlock %@" : {
+
+    },
+    "Unlock to see your accounts." : {
+
+    },
+    "Unlock with Touch ID" : {
+
+    },
+    "Unlock:" : {
+
+    },
+    "Update PIN in macOS Keychain" : {
+
+    },
+    "Updated %@" : {
+
+    },
+    "Updated %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Updated %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Use at least 8 characters." : {
+
+    },
+    "Use this folder" : {
+
+    },
+    "Valid IBAN" : {
+
+    },
+    "Value" : {
+
+    },
+    "Waiting for %@" : {
+
+    },
+    "Waiting for approval" : {
+
+    },
+    "Waiting for approval in S-pushTAN…" : {
+
+    },
+    "Weight" : {
+
+    },
+    "What changed" : {
+
+    },
+    "What is left in each budget on %@ is added to its %@ limit." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "What is left in each budget on %1$@ is added to its %2$@ limit."
+          }
+        }
+      }
+    },
+    "What is left in each budget on %@ is not carried over to %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "What is left in each budget on %1$@ is not carried over to %2$@."
+          }
+        }
+      }
+    },
+    "Where it went" : {
+
+    },
+    "Why" : {
+
+    },
+    "Why it counts" : {
+
+    },
+    "Why this happens" : {
+
+    },
+    "Without category" : {
+
+    },
+    "Worked out on this Mac" : {
+
+    },
+    "Wrong password." : {
+
+    },
+    "Wrong password. Try again." : {
+
+    },
+    "Year" : {
+
+    },
+    "Year total" : {
+
+    },
+    "Yearly" : {
+
+    },
+    "You appear to be offline." : {
+
+    },
+    "You'll confirm with pushTAN." : {
+
+    },
+    "You'll find it under Standing orders." : {
+
+    },
+    "Your fingerprints changed. Enter your password once to turn Touch ID back on." : {
+
+    },
+    "account" : {
+
+    },
+    "all time" : {
+
+    },
+    "an earlier sync" : {
+
+    },
+    "and" : {
+
+    },
+    "arrives on %@" : {
+
+    },
+    "average monthly spending" : {
+
+    },
+    "contract" : {
+
+    },
+    "earlier today" : {
+
+    },
+    "left to spend this month" : {
+
+    },
+    "or press ⏎ to type your password" : {
+
+    },
+    "over budget this month" : {
+
+    },
+    "policy" : {
+
+    },
+    "prices from Tradegate, %@ 09:15" : {
+
+    },
+    "pushTAN — S-pushTAN app" : {
+
+    },
+    "since purchase" : {
+
+    },
+    "spent in %@ so far" : {
+
+    },
+    "spent this quarter so far" : {
+
+    },
+    "the last 30 days" : {
+
+    },
+    "the last 90 days" : {
+
+    },
+    "today" : {
+
+    },
+    "today %@" : {
+
+    },
+    "today, %@" : {
+
+    },
+    "yesterday" : {
+
+    },
+    "yesterday %@" : {
+
+    },
+    "yesterday, %@" : {
+
+    },
+    "your bank" : {
+
+    },
+    "⌘K" : {
+
+    }
+  },
+  "version" : "1.0"
+}

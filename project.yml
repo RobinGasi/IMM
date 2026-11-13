@@ -1,0 +1,88 @@
+name: IMM
+configs:
+  Debug: debug
+  Debug-Unsigned: debug
+  Release: release
+configFiles:
+  Debug: Config/Signed.xcconfig
+  Release: Config/Signed.xcconfig
+  Debug-Unsigned: Config/Unsigned.xcconfig
+options:
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+  configs:
+    Debug:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+    Debug-Unsigned:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG UNSIGNED_BUILD
+packages:
+  IMMKit:
+    path: Packages/IMMKit
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.10.1
+targets:
+  IMM:
+    type: application
+    platform: macOS
+    sources:
+      - path: App
+        excludes:
+          - Info.plist
+          - "*.entitlements"
+      # LaunchAgent plist for SMAppService.agent(plistName:): IMM.app/Contents/Library/LaunchAgents/
+      - path: Agent/dev.gasi.imm.sync-agent.plist
+        buildPhase:
+          copyFiles:
+            destination: wrapper
+            subpath: Contents/Library/LaunchAgents
+    dependencies:
+      - package: IMMKit
+        product: IMMUI
+      - package: Sparkle
+        product: Sparkle
+      # The always-on sync agent:
+      # IMM.app/Contents/Library/LoginItems/IMM Sync Agent.app, started by the LaunchAgent plist below via SMAppService.
+      - target: IMMSyncAgent
+        embed: true
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Library/LoginItems
+  IMMSyncAgent:
+    type: application
+    platform: macOS
+    sources:
+      - path: Agent
+        excludes:
+          - Info.plist
+          - "*.entitlements"
+          - "*.plist"
+    dependencies:
+      - package: IMMKit
+        product: IMMSyncCore
+    settings:
+      base:
+        PRODUCT_NAME: IMM Sync Agent
+        PRODUCT_BUNDLE_IDENTIFIER: dev.gasi.imm.sync-agent
+        INFOPLIST_FILE: Agent/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Agent/IMMSyncAgent.entitlements
+        SKIP_INSTALL: YES
+        # A launchd job runs the plain executable; no debug stub dylib / preview dylib.
+        ENABLE_DEBUG_DYLIB: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: ""
+schemes:
+  IMM:
+    build:
+      targets:
+        IMM: all
+    run:
+      config: Debug
+    profile:
+      config: Release
+    archive:
+      config: Release

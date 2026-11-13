@@ -1,0 +1,7 @@
+IMM.xcodeproj
+build/
+.build/
+DerivedData/
+Config/Local.xcconfig
+.DS_Store
+.swiftpm/

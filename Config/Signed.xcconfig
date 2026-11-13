@@ -1,0 +1,14 @@
+// Debug and Release: automatic signing with the Apple Development / Developer ID team.
+CODE_SIGN_STYLE = Automatic
+DEVELOPMENT_TEAM = HHK7S6D2TR
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_ENTITLEMENTS = App/IMM.entitlements
+
+// CloudKit and push: Development while debugging, Production in Release (Developer ID) builds.
+IMM_CLOUDKIT_ENVIRONMENT = Development
+IMM_CLOUDKIT_ENVIRONMENT[config=Release] = Production
+IMM_APS_ENVIRONMENT = development
+IMM_APS_ENVIRONMENT[config=Release] = production
+
+// Last, so Local.xcconfig (included by Base) overrides the values above.
+#include "Base.xcconfig"

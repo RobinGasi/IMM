@@ -1,0 +1,18 @@
+// Shared build settings. Signed.xcconfig and Unsigned.xcconfig include this file
+// last, so Config/Local.xcconfig (git-ignored, for forks) overrides every value.
+PRODUCT_BUNDLE_IDENTIFIER = dev.gasi.imm
+PRODUCT_NAME = IMM
+MARKETING_VERSION = 0.1.0
+CURRENT_PROJECT_VERSION = 1
+MACOSX_DEPLOYMENT_TARGET = 26.0
+ENABLE_HARDENED_RUNTIME = YES
+INFOPLIST_FILE = App/Info.plist
+GENERATE_INFOPLIST_FILE = NO
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
+ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor
+IMM_FEED_URL = https:/$()/gasi.dev/imm/appcast.xml
+// iCloud container for the sync relay (forks: use your own container in Local.xcconfig).
+IMM_CLOUDKIT_CONTAINER = iCloud.dev.gasi.imm
+IMM_SPARKLE_PUBLIC_KEY = QT1T9xWk94dVnYNCJjYFsTmDjOCY1WBSHN1ad/jAQHc=
+
+#include? "Local.xcconfig"

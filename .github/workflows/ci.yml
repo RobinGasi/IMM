@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+
+jobs:
+  test:
+    name: Tests
+    # macOS with Xcode 27 (preview image). IMM needs the macOS 26+ SDK and Swift 6.4.
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - uses: actions/cache@v6
+        with:
+          path: Packages/IMMKit/.build
+          key: spm-${{ runner.os }}-${{ hashFiles('Packages/IMMKit/Package.resolved', 'Packages/IMMKit/Package.swift') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Test
+        run: swift test --package-path Packages/IMMKit
+
+      - name: Upload design diffs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: design-diff
+          path: build/design-diff
+          if-no-files-found: ignore
+          retention-days: 14
+
+  build-app:
+    name: Build app (unsigned)
+    runs-on: xcode-27
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build Debug-Unsigned
+        run: |
+          xcodebuild -project IMM.xcodeproj -scheme IMM -configuration Debug-Unsigned \
+            -destination 'platform=macOS' -derivedDataPath build/dd build
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

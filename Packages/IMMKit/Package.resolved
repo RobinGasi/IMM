@@ -1,0 +1,33 @@
+{
+  "originHash" : "8bf8dc2b964942e9faee23d2563ad7315ff41d626f8f20a0bfe2e4e0caa89e0e",
+  "pins" : [
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sqlcipher/GRDB.swift.git",
+      "state" : {
+        "revision" : "a7bf50c615d256ddbbcba98eb038ee3673c24311",
+        "version" : "7.12.0"
+      }
+    },
+    {
+      "identity" : "sqlcipher.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sqlcipher/SQLCipher.swift.git",
+      "state" : {
+        "revision" : "e7415c5e6b4fd9b78874bb956aad8a42b08e9966",
+        "version" : "4.20.0"
+      }
+    },
+    {
+      "identity" : "swift-sodium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jedisct1/swift-sodium.git",
+      "state" : {
+        "revision" : "cfd195c76882aa9b997560ca7cb95d72fbf5db00",
+        "version" : "0.11.0"
+      }
+    }
+  ],
+  "version" : 3
+}

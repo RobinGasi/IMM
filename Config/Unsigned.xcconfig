@@ -1,0 +1,9 @@
+// Debug-Unsigned: ad-hoc signature, no provisioning profile, no keychain-access-groups.
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = -
+DEVELOPMENT_TEAM =
+PROVISIONING_PROFILE_SPECIFIER =
+CODE_SIGN_ENTITLEMENTS = App/IMM-Unsigned.entitlements
+
+// Last, so Local.xcconfig (included by Base) overrides the values above.
+#include "Base.xcconfig"
