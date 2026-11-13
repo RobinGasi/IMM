@@ -45,6 +45,7 @@ enum ScreenRenderer {
         let height = Int(size.height.rounded())
         guard width > 0, height > 0 else { throw ScreenRendererError.invalidSize(size) }
 
+        forceOverlayScrollers()
         _ = NSApplication.shared
         IMMFonts.registerIfNeeded()
 
@@ -138,5 +139,20 @@ enum ScreenRenderer {
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         guard let result = context.makeImage() else { throw ScreenRendererError.captureFailed }
         return result
+    }
+}
+
+extension ScreenRenderer {
+    /// The references are drawn with overlay scroll bars. A Mac without a trackpad (a CI runner) shows legacy scroll
+    /// bars by default, which take width from every scroll view and shift the columns. This sets the scroll bar
+    /// preference for this test process only (argument domain, nothing is written to disk).
+    private static func forceOverlayScrollers() {
+        let key = "AppleShowScrollBars"
+        let value = "WhenScrolling"
+        let defaults = UserDefaults.standard
+        var arguments = defaults.volatileDomain(forName: UserDefaults.argumentDomain)
+        guard arguments[key] as? String != value else { return }
+        arguments[key] = value
+        defaults.setVolatileDomain(arguments, forName: UserDefaults.argumentDomain)
     }
 }
