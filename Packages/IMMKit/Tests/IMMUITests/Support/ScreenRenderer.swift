@@ -45,7 +45,7 @@ enum ScreenRenderer {
         let height = Int(size.height.rounded())
         guard width > 0, height > 0 else { throw ScreenRendererError.invalidSize(size) }
 
-        forceOverlayScrollers()
+        pinRenderingDefaults()
         _ = NSApplication.shared
         IMMFonts.registerIfNeeded()
 
@@ -143,16 +143,18 @@ enum ScreenRenderer {
 }
 
 extension ScreenRenderer {
-    /// The references are drawn with overlay scroll bars. A Mac without a trackpad (a CI runner) shows legacy scroll
-    /// bars by default, which take width from every scroll view and shift the columns. This sets the scroll bar
-    /// preference for this test process only (argument domain, nothing is written to disk).
-    private static func forceOverlayScrollers() {
-        let key = "AppleShowScrollBars"
-        let value = "WhenScrolling"
+    /// Rendering preferences the references assume, set for this test process only (argument domain, nothing is
+    /// written to disk):
+    /// - overlay scroll bars: a Mac without a trackpad (a CI runner) shows legacy scroll bars, which take width from
+    ///   every scroll view and shift the columns;
+    /// - no font smoothing: macOS draws text without it on Retina screens, where the references were made, but a
+    ///   headless runner falls back to a 1x screen and thickens light text on dark backgrounds.
+    private static func pinRenderingDefaults() {
+        let pinned: [String: Any] = ["AppleShowScrollBars": "WhenScrolling", "AppleFontSmoothing": 0]
         let defaults = UserDefaults.standard
         var arguments = defaults.volatileDomain(forName: UserDefaults.argumentDomain)
-        guard arguments[key] as? String != value else { return }
-        arguments[key] = value
+        guard pinned.contains(where: { arguments[$0.key] == nil }) else { return }
+        arguments.merge(pinned) { _, new in new }
         defaults.setVolatileDomain(arguments, forName: UserDefaults.argumentDomain)
     }
 }
