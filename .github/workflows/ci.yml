@@ -25,11 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Toolchain
+      - name: Toolchain and rendering environment
         run: |
           sw_vers
           xcodebuild -version
           swift --version
+          # Screen comparisons depend on these; print them so a diff can be explained.
+          echo "reduceMotion: $(defaults read com.apple.universalaccess reduceMotion 2>/dev/null || echo unset)"
+          echo "AppleFontSmoothing: $(defaults read -g AppleFontSmoothing 2>/dev/null || echo unset)"
+          system_profiler SPDisplaysDataType | grep -E "Resolution|Retina|Display Type|UI Looks like" || true
 
       - uses: actions/cache@v6
         with:

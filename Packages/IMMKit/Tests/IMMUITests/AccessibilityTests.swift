@@ -17,6 +17,10 @@ import Testing
 @Suite(.serialized) struct AccessibilityTests {
     private let nbsp = "\u{00A0}"
 
+    /// With Reduce Motion on in macOS (CI runner images have it), nothing animates, so the checks that an
+    /// animation is still running cannot be made; the checks that settled motion shows the final state still are.
+    private var motionRuns: Bool { !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
     // MARK: Chart values
 
     @Test func chartSummaryNamesTheRangeAndTheExtremes() {
@@ -50,7 +54,9 @@ import Testing
 
     @Test func settledMotionShowsTheFinalStateAtOnce() async throws {
         let animating = centre(try await render(entrance, disableMotion: false))
-        #expect(animating.redComponent > 0.95 && animating.greenComponent > 0.9, "the entrance has not started, got \(animating)")
+        if motionRuns {
+            #expect(animating.redComponent > 0.95 && animating.greenComponent > 0.9, "the entrance has not started, got \(animating)")
+        }
 
         let settled = centre(try await render(entrance, disableMotion: true))
         #expect(settled.redComponent > 0.95 && settled.greenComponent < 0.5, "settled motion must show the final state, got \(settled)")
@@ -72,7 +78,9 @@ import Testing
         let settled = centre(try await render(view, disableMotion: true))
         #expect(settled.greenComponent < 0.5, "the whole line is drawn at once, got \(settled)")
         let running = centre(try await render(view, disableMotion: false))
-        #expect(running.greenComponent > 0.9, "the line has not started to draw, got \(running)")
+        if motionRuns {
+            #expect(running.greenComponent > 0.9, "the line has not started to draw, got \(running)")
+        }
     }
 
     private func bitmapData(_ rep: NSBitmapImageRep) -> Data {
@@ -89,7 +97,9 @@ import Testing
         // Otherwise the symbol turns, so two captures 0.35 s apart differ.
         let moving1 = bitmapData(try await render(spinner, disableMotion: false, settle: 0.1))
         let moving2 = bitmapData(try await render(spinner, disableMotion: false, settle: 0.45))
-        #expect(moving1 != moving2, "the sync symbol turns while syncing")
+        if motionRuns {
+            #expect(moving1 != moving2, "the sync symbol turns while syncing")
+        }
     }
 
     /// Every file that starts an animation by itself (an entrance, a draw-on, a spinner) must consult

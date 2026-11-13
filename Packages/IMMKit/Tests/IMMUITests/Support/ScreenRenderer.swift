@@ -62,6 +62,8 @@ enum ScreenRenderer {
         )
         window.isReleasedWhenClosed = false
         window.appearance = NSAppearance(named: appearance)
+        // Draw in sRGB whatever the display's profile is, so captures match on every Mac (and CI's virtual display).
+        window.colorSpace = .sRGB
         window.contentView = host
         host.frame = NSRect(x: 0, y: 0, width: width, height: height)
         window.orderFrontRegardless()
