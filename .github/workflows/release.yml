@@ -2,8 +2,9 @@ name: Release
 
 # Cut a release from the Actions tab ("Run workflow") with a version, or push a vX.Y.Z tag.
 # CI runs first; then Tools/release.sh archives, signs with Developer ID, notarizes and writes the
-# appcast, and this workflow publishes IMM-<version>.zip and appcast.xml as GitHub release
-# v<version>. The app's Sparkle feed is releases/latest/download/appcast.xml (Config/Base.xcconfig).
+# appcast, and this workflow publishes IMM-<version>.dmg (first install), IMM-<version>.zip and
+# appcast.xml (Sparkle updates) as GitHub release v<version>. The app's Sparkle feed is
+# releases/latest/download/appcast.xml (Config/Base.xcconfig).
 on:
   workflow_dispatch:
     inputs:
@@ -118,6 +119,7 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "IMM $VERSION" \
             --generate-notes \
+            "build/release/IMM-$VERSION.dmg" \
             "build/release/IMM-$VERSION.zip" \
             build/release/appcast.xml
 

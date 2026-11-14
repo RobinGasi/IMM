@@ -3,9 +3,9 @@
 #
 #   Tools/release.sh [--skip-notarize]
 #
-# Output in build/release/: IMM.app, IMM-<version>.zip, appcast.xml. Nothing is uploaded: the
-# Release workflow (.github/workflows/release.yml) attaches the zip and appcast.xml to the GitHub
-# release v<version>, which the appcast's download URLs point at.
+# Output in build/release/: IMM.app, IMM-<version>.dmg (first install), IMM-<version>.zip (Sparkle
+# updates), appcast.xml. Nothing is uploaded: the Release workflow (.github/workflows/release.yml)
+# attaches them to the GitHub release v<version>, which the appcast's download URLs point at.
 #
 # Optional environment (the Release workflow sets all of them):
 #   IMM_VERSION       marketing version (default: MARKETING_VERSION from Config/Base.xcconfig)
@@ -73,6 +73,7 @@ VERSION="${IMM_VERSION:-$(awk -F' *= *' '/^MARKETING_VERSION/{print $2; exit}' C
 # Sparkle orders updates by CFBundleVersion; the commit count only grows on main.
 BUILD="${IMM_BUILD:-$(git rev-list --count HEAD)}"
 ZIP="$OUT/IMM-$VERSION.zip"
+DMG="$OUT/IMM-$VERSION.dmg"
 echo "==> Version $VERSION ($BUILD)"
 
 BUILD_SETTINGS=(MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$BUILD")
@@ -151,19 +152,33 @@ do
   echo "$ENTITLEMENTS" | jq -e "$check" >/dev/null || { echo "Missing or wrong entitlement: $check" >&2; exit 1; }
 done
 
-echo "==> Packaging"
-ditto -c -k --keepParent "$APP" "$ZIP"
+echo "==> Building disk image"
+# The DMG carries its own Developer ID signature; one notarization submission of it also
+# registers the app inside, so both get stapled afterwards.
+IDENTITY="$(security find-identity -v -p codesigning | awk -v team="($TEAM_ID)" '/"Developer ID Application: / && index($0, team) {print $2; exit}')"
+[[ -n "$IDENTITY" ]] || { echo "No Developer ID Application identity for team $TEAM_ID in the keychain" >&2; exit 1; }
+DMG_STAGE="$OUT/dmg-stage"
+mkdir -p "$DMG_STAGE"
+ditto "$APP" "$DMG_STAGE/IMM.app"
+ln -s /Applications "$DMG_STAGE/Applications"
+hdiutil create -volname "IMM $VERSION" -srcfolder "$DMG_STAGE" -fs APFS -format ULFO -ov "$DMG" >/dev/null
+rm -rf "$DMG_STAGE"
+codesign --sign "$IDENTITY" --timestamp "$DMG"
+codesign --verify --strict --verbose=2 "$DMG"
 
 if [[ $SKIP_NOTARIZE -eq 0 ]]; then
   echo "==> Notarizing (this waits for Apple)"
-  xcrun notarytool submit "$ZIP" "${NOTARY_AUTH[@]}" --wait
+  xcrun notarytool submit "$DMG" "${NOTARY_AUTH[@]}" --wait
+  xcrun stapler staple "$DMG"
+  xcrun stapler validate "$DMG"
   xcrun stapler staple "$APP"
   xcrun stapler validate "$APP"
-  rm -f "$ZIP"
-  ditto -c -k --keepParent "$APP" "$ZIP"
 else
-  echo "==> Skipping notarization (--skip-notarize): the zip is signed but Gatekeeper will reject it"
+  echo "==> Skipping notarization (--skip-notarize): signed, but Gatekeeper will reject the DMG and zip"
 fi
+
+echo "==> Packaging update zip"
+ditto -c -k --keepParent "$APP" "$ZIP"
 
 echo "==> Writing appcast"
 GENERATE_APPCAST="$(find "$DERIVED/SourcePackages/artifacts" -name generate_appcast -type f -perm -u+x 2>/dev/null | head -n 1)"
@@ -180,6 +195,7 @@ mv "$STAGE/appcast.xml" "$OUT/appcast.xml"
 rm -rf "$STAGE"
 
 echo
-echo "Done. Attach these two files to the GitHub release v$VERSION:"
+echo "Done. Attach these files to the GitHub release v$VERSION:"
+echo "  $DMG"
 echo "  $ZIP"
 echo "  $OUT/appcast.xml"

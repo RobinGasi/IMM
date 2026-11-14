@@ -55,9 +55,13 @@
 - **Only on your tailnet.** A small helper inside IMM listens on the Mac's Tailscale address only and keeps sealed batches for devices that are offline; it holds no key that can open them. It is off until you turn on "Sync over Tailscale".
 - **iCloud relay** (optional, signed builds): sealed batches also go to your private iCloud database, so a device that was asleep catches up. Apple sees only ciphertext.
 
+## Install
+
+Download `IMM-<version>.dmg` from the [latest release](https://github.com/RobinGasi/IMM/releases/latest) and drag IMM to Applications. It is signed with Developer ID and notarized, needs macOS 26 or later, and updates itself through Sparkle.
+
 ## Build and run
 
-There is no signed download yet. Build it yourself with Xcode 27 on macOS 26 or later:
+Build it yourself with Xcode 27 on macOS 26 or later:
 
 ```sh
 brew install xcodegen

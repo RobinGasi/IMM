@@ -189,7 +189,7 @@ Never edit the catalog's source strings by hand.
 
 ## Release
 
-Releases are cut by the `Release` workflow (`.github/workflows/release.yml`): Actions › Release › Run workflow with a version such as `0.2.0`, or push a tag `v0.2.0`. It runs CI first, then `Tools/release.sh` on the `xcode-27` runner, then creates the GitHub release `v<version>` (tag at the built commit, generated notes) with `IMM-<version>.zip` and `appcast.xml` attached. The app's Sparkle feed is the `appcast.xml` of the newest release.
+Releases are cut by the `Release` workflow (`.github/workflows/release.yml`): Actions › Release › Run workflow with a version such as `0.2.0`, or push a tag `v0.2.0`. It runs CI first, then `Tools/release.sh` on the `xcode-27` runner, then creates the GitHub release `v<version>` (tag at the built commit, generated notes) with `IMM-<version>.dmg` (first install), `IMM-<version>.zip` (Sparkle update) and `appcast.xml` attached. The app's Sparkle feed is the `appcast.xml` of the newest release.
 
 Repository secrets the workflow needs:
 
@@ -207,11 +207,11 @@ Tools/release.sh                  # full release
 Tools/release.sh --skip-notarize  # build, sign, zip and appcast only
 ```
 
-Steps: `xcodegen generate`, `xcodebuild archive`, `xcodebuild -exportArchive` (method `developer-id`, team `HHK7S6D2TR`), `ditto` zip, `notarytool submit --wait` and `stapler staple`, then Sparkle `generate_appcast` with download prefix `https://github.com/RobinGasi/IMM/releases/download/v<version>/`. `CFBundleVersion`, which Sparkle compares, is the commit count of `HEAD`.
+Steps: `xcodegen generate`, `xcodebuild archive`, `xcodebuild -exportArchive` (method `developer-id`, team `HHK7S6D2TR`), `hdiutil` disk image (app plus an Applications link) signed with Developer ID, one `notarytool submit --wait` of the DMG, `stapler staple` on DMG and app, `ditto` zip of the stapled app, then Sparkle `generate_appcast` with download prefix `https://github.com/RobinGasi/IMM/releases/download/v<version>/`. `CFBundleVersion`, which Sparkle compares, is the commit count of `HEAD`.
 
 Locally the script uses automatic signing (`Config/ExportOptions.plist`), the notarytool keychain profile `imm-notary` (missing: it prints the `store-credentials` command and exits non-zero) and Sparkle's private key from the login Keychain. The workflow switches each of these through environment variables documented at the top of the script: `IMM_APP_PROFILE` (manual signing with that profile), `NOTARY_KEY_PATH`/`NOTARY_KEY_ID`/`NOTARY_ISSUER_ID`, `SPARKLE_KEY_FILE`, plus `IMM_VERSION` and `IMM_BUILD`.
 
-Output is in `build/release/`: `IMM-<version>.zip` and `appcast.xml`. The script uploads nothing.
+Output is in `build/release/`: `IMM-<version>.dmg`, `IMM-<version>.zip` and `appcast.xml`. The script uploads nothing.
 
 Check the result:
 
