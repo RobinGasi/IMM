@@ -1,7 +1,12 @@
 // Debug and Release: automatic signing with the Apple Development / Developer ID team.
-CODE_SIGN_STYLE = Automatic
+// Tools/release.sh on CI overrides IMM_SIGN_STYLE / IMM_SIGN_IDENTITY (manual Developer ID signing,
+// no Xcode account). Plain CODE_SIGN_* overrides on the command line would also reach the Swift
+// package targets, which cannot be signed manually.
+IMM_SIGN_STYLE = Automatic
+IMM_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = $(IMM_SIGN_STYLE)
 DEVELOPMENT_TEAM = HHK7S6D2TR
-CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_IDENTITY = $(IMM_SIGN_IDENTITY)
 CODE_SIGN_ENTITLEMENTS = App/IMM.entitlements
 
 // CloudKit and push: Development while debugging, Production in Release (Developer ID) builds.

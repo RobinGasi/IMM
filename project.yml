@@ -28,6 +28,10 @@ targets:
   IMM:
     type: application
     platform: macOS
+    settings:
+      base:
+        # Empty under automatic signing. Tools/release.sh sets it (profile UUID) for manual Developer ID signing on CI.
+        PROVISIONING_PROFILE_SPECIFIER: $(IMM_APP_PROFILE)
     sources:
       - path: App
         excludes:

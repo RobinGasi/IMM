@@ -5,12 +5,15 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # The Release workflow runs the suite first.
+  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  # github.workflow is the caller's name under workflow_call, so a release never cancels a main push run.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:

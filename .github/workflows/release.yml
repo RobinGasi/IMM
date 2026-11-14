@@ -1,0 +1,128 @@
+name: Release
+
+# Cut a release from the Actions tab ("Run workflow") with a version, or push a vX.Y.Z tag.
+# CI runs first; then Tools/release.sh archives, signs with Developer ID, notarizes and writes the
+# appcast, and this workflow publishes IMM-<version>.zip and appcast.xml as GitHub release
+# v<version>. The app's Sparkle feed is releases/latest/download/appcast.xml (Config/Base.xcconfig).
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.1.0"
+        required: true
+  push:
+    tags: ["v*.*.*"]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  release:
+    name: Build, notarize, publish
+    needs: test
+    runs-on: xcode-27
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Tools/release.sh numbers builds (CFBundleVersion) by commit count.
+          fetch-depth: 0
+
+      - name: Version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then version="${GITHUB_REF_NAME#v}"; else version="${INPUT_VERSION#v}"; fi
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Not a version: $version" >&2; exit 1; }
+          if gh release view "v$version" >/dev/null 2>&1; then echo "Release v$version already exists" >&2; exit 1; fi
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+          echo "Releasing $version"
+
+      - name: Install tools
+        run: brew install xcodegen jq
+
+      # Manual Developer ID signing: no Xcode account on the runner. The profile is the manually
+      # managed "IMM Developer ID (CI)" (MAC_APP_DIRECT, dev.gasi.imm); it expires with the certificate.
+      - name: Install signing material
+        env:
+          MACOS_SIGN_P12: ${{ secrets.MACOS_SIGN_P12 }}
+          MACOS_SIGN_PASSWORD: ${{ secrets.MACOS_SIGN_PASSWORD }}
+          MACOS_PROVISION_PROFILE: ${{ secrets.MACOS_PROVISION_PROFILE }}
+          MACOS_NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          keychain="$RUNNER_TEMP/imm-signing.keychain-db"
+          keychain_password="$(uuidgen)"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          base64 --decode <<<"$MACOS_SIGN_P12" >"$RUNNER_TEMP/sign.p12"
+          security import "$RUNNER_TEMP/sign.p12" -k "$keychain" -P "$MACOS_SIGN_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          rm -f "$RUNNER_TEMP/sign.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$keychain_password" "$keychain" >/dev/null
+          # shellcheck disable=SC2046 # one keychain path per word; they contain no spaces
+          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$keychain"
+
+          profiles="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
+          mkdir -p "$profiles"
+          base64 --decode <<<"$MACOS_PROVISION_PROFILE" >"$RUNNER_TEMP/imm.provisionprofile"
+          uuid="$(security cms -D -i "$RUNNER_TEMP/imm.provisionprofile" | plutil -extract UUID raw -o - -)"
+          mv "$RUNNER_TEMP/imm.provisionprofile" "$profiles/$uuid.provisionprofile"
+
+          ( umask 077
+            printf '%s' "$MACOS_NOTARY_KEY" >"$RUNNER_TEMP/notary.p8"
+            printf '%s' "$SPARKLE_PRIVATE_KEY" >"$RUNNER_TEMP/sparkle.key" )
+
+          {
+            echo "IMM_APP_PROFILE=$uuid"
+            echo "SIGNING_KEYCHAIN=$keychain"
+            echo "PROFILE_PATH=$profiles/$uuid.provisionprofile"
+          } >>"$GITHUB_ENV"
+
+      - name: Build, sign, notarize, write appcast
+        env:
+          IMM_VERSION: ${{ steps.version.outputs.version }}
+          NOTARY_KEY_PATH: ${{ runner.temp }}/notary.p8
+          NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+          SPARKLE_KEY_FILE: ${{ runner.temp }}/sparkle.key
+        run: Tools/release.sh
+
+      # Creates the tag at the built commit when run from the Actions tab. A tag made with
+      # GITHUB_TOKEN starts no workflow, so this run stays the only release.
+      - name: Publish GitHub release
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "IMM $VERSION" \
+            --generate-notes \
+            "build/release/IMM-$VERSION.zip" \
+            build/release/appcast.xml
+
+      - name: Remove signing material
+        if: always()
+        run: |
+          [[ -n "${SIGNING_KEYCHAIN:-}" ]] && security delete-keychain "$SIGNING_KEYCHAIN" || true
+          rm -f "$RUNNER_TEMP/notary.p8" "$RUNNER_TEMP/sparkle.key" "$RUNNER_TEMP/sign.p12" "${PROFILE_PATH:-/nonexistent}"

@@ -76,7 +76,7 @@ IMM_CLOUDKIT_CONTAINER = iCloud.com.example.imm
 - `DEVELOPMENT_TEAM`: your Apple team.
 - `PRODUCT_BUNDLE_IDENTIFIER`: the keychain access group, the Sparkle mach-lookup names and the document UTI follow it.
 - `IMM_FEED_URL`: Sparkle appcast URL. Write `https:/$()/…`: a plain `//` starts a comment in xcconfig files.
-- `IMM_SPARKLE_PUBLIC_KEY`: the public half of your Sparkle EdDSA key. The default feed is `https://gasi.dev/imm/appcast.xml`.
+- `IMM_SPARKLE_PUBLIC_KEY`: the public half of your Sparkle EdDSA key. The default feed is `https://github.com/RobinGasi/IMM/releases/latest/download/appcast.xml`.
 - `IMM_CLOUDKIT_CONTAINER`: your iCloud container for the sync relay.
 
 After editing `Local.xcconfig`, rebuild; regenerating the project is not needed.
@@ -189,25 +189,29 @@ Never edit the catalog's source strings by hand.
 
 ## Release
 
-`Tools/release.sh` builds the `Release` configuration, signs it with Developer ID, notarizes, packages and writes the Sparkle feed:
+Releases are cut by the `Release` workflow (`.github/workflows/release.yml`): Actions › Release › Run workflow with a version such as `0.2.0`, or push a tag `v0.2.0`. It runs CI first, then `Tools/release.sh` on the `xcode-27` runner, then creates the GitHub release `v<version>` (tag at the built commit, generated notes) with `IMM-<version>.zip` and `appcast.xml` attached. The app's Sparkle feed is the `appcast.xml` of the newest release.
+
+Repository secrets the workflow needs:
+
+| Secret | Content |
+| --- | --- |
+| `MACOS_SIGN_P12`, `MACOS_SIGN_PASSWORD` | Developer ID Application certificate and key, base64 .p12 (build it with `/usr/bin/openssl`: `security import` rejects OpenSSL 3's default encryption) |
+| `MACOS_PROVISION_PROFILE` | base64 of the manually managed Developer ID profile `IMM Developer ID (CI)` for `dev.gasi.imm`. It expires with the certificate; Xcode-managed profiles are refused under manual signing |
+| `MACOS_NOTARY_KEY`, `MACOS_NOTARY_KEY_ID`, `MACOS_NOTARY_ISSUER_ID` | App Store Connect API key (.p8 contents) for `notarytool` |
+| `SPARKLE_PRIVATE_KEY` | Sparkle EdDSA private key, exported with `generate_keys -x <file>` |
+
+`Tools/release.sh` also runs locally:
 
 ```sh
 Tools/release.sh                  # full release
 Tools/release.sh --skip-notarize  # build, sign, zip and appcast only
 ```
 
-Steps: `xcodegen generate`, `xcodebuild archive`, `xcodebuild -exportArchive` with `Config/ExportOptions.plist` (method `developer-id`, team `HHK7S6D2TR`), `ditto` zip, `notarytool submit --wait` and `stapler staple`, then Sparkle `generate_appcast` with download prefix `https://gasi.dev/imm/`.
+Steps: `xcodegen generate`, `xcodebuild archive`, `xcodebuild -exportArchive` (method `developer-id`, team `HHK7S6D2TR`), `ditto` zip, `notarytool submit --wait` and `stapler staple`, then Sparkle `generate_appcast` with download prefix `https://github.com/RobinGasi/IMM/releases/download/v<version>/`. `CFBundleVersion`, which Sparkle compares, is the commit count of `HEAD`.
 
-Prerequisites:
+Locally the script uses automatic signing (`Config/ExportOptions.plist`), the notarytool keychain profile `imm-notary` (missing: it prints the `store-credentials` command and exits non-zero) and Sparkle's private key from the login Keychain. The workflow switches each of these through environment variables documented at the top of the script: `IMM_APP_PROFILE` (manual signing with that profile), `NOTARY_KEY_PATH`/`NOTARY_KEY_ID`/`NOTARY_ISSUER_ID`, `SPARKLE_KEY_FILE`, plus `IMM_VERSION` and `IMM_BUILD`.
 
-- A Developer ID Application certificate for the team in your Keychain.
-- A notarytool profile named `imm-notary`. If it is missing the script prints the command and exits non-zero:
-  ```sh
-  xcrun notarytool store-credentials imm-notary
-  ```
-- Sparkle's EdDSA private key in the login Keychain (created once with Sparkle's `generate_keys`, found with `find build -name generate_keys`; it prints the public key for `IMM_SPARKLE_PUBLIC_KEY`).
-
-Output is in `build/release/`: `IMM-<version>.zip` and `appcast.xml`. Upload both to `https://gasi.dev/imm/`. The script uploads nothing.
+Output is in `build/release/`: `IMM-<version>.zip` and `appcast.xml`. The script uploads nothing.
 
 Check the result:
 
