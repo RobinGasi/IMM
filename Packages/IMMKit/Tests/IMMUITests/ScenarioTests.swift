@@ -223,6 +223,7 @@ struct GatedConnector: BankConnector {
     let approvals: ApprovalGate
 
     var id: String { inner.id }
+    var supportsPayments: Bool { inner.supportsPayments }
 
     func searchBanks(_ query: String) async throws -> [BankDirectoryEntry] { try await inner.searchBanks(query) }
 

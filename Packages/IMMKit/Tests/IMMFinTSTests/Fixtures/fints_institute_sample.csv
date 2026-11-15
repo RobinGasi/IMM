@@ -1,0 +1,8 @@
+Nr.;BLZ;BIC;Institut;Ort;RZ;Organisation;HBCI-Zugang DNS;HBCI-Zugang IP-Adresse;HBCI-Version;DDV;RDH-1;PIN/TAN-Zugang URL;Version;Bemerkungen
+1;10000001;TESTDE01XXX;Beispielbank Ost;Berlin;RZ1;Org A;;;3.0;X;;https://fints.example.invalid/ost/pintan;FinTS V3.0;
+2;10000002;TESTDE02XXX;"Süd-Sparkasse; Zweigstelle ""Mitte""";München;RZ2;Org B;;;3.0;X;;https://fints.example.invalid/sued;FinTS V3.0;
+3;10000003;TESTDE03XXX;Nur-HBCI Bank;Köln;RZ3;Org C;hbci.example.invalid;;2.2;X;X;;;
+4;10000004;;Klartext Bank;Hamburg;RZ4;Org D;;;3.0;X;;http://fints.example.invalid/klartext;FinTS V3.0;
+5;1000 0001;TESTDE09XXX;Doppelte Beispielbank;Bremen;RZ1;Org A;;;3.0;X;;https://fints.example.invalid/duplicate;FinTS V3.0;
+6;10000006;TESTDE06XXX;Großstadt Genossenschaftsbank eG;Düsseldorf;RZ6;Org E;;;3.0;X;;https://fints.example.invalid/gross;;
+7;ungültig;;Kaputte Zeile;Nirgendwo;;;;;;;;https://fints.example.invalid/x;FinTS V3.0;

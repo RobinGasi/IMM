@@ -15,5 +15,8 @@ IMM_FEED_URL = https:/$()/github.com/RobinGasi/IMM/releases/latest/download/appc
 // iCloud container for the sync relay (forks: use your own container in Local.xcconfig).
 IMM_CLOUDKIT_CONTAINER = iCloud.dev.gasi.imm
 IMM_SPARKLE_PUBLIC_KEY = QT1T9xWk94dVnYNCJjYFsTmDjOCY1WBSHN1ad/jAQHc=
+// FinTS product registration number from the Deutsche Kreditwirtschaft (banks refuse dialogs without it). Forks set it
+// in Local.xcconfig. Empty keeps the demo bank.
+IMM_FINTS_PRODUCT_ID =
 
 #include? "Local.xcconfig"

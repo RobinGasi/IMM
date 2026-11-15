@@ -37,7 +37,7 @@ struct ToolbarView: View {
             .accessibilityValue(Text(verbatim: model.bank.syncState.isSyncing ? String(localized: "Syncing…", bundle: .module) : ""))
 
             Button {
-                model.openNewTransfer()
+                if model.paymentsAvailable { model.openNewTransfer() }
             } label: {
                 HStack(spacing: 4) {
                     IMMIcon("arrow-up-right", size: IMMButtonStyle.Size.default.iconSize)
@@ -45,6 +45,7 @@ struct ToolbarView: View {
                 }
             }
             .immButtonStyle(.default, leadingIcon: true)
+            .paymentEntryPoint(available: model.paymentsAvailable)
         }
         .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 16))
         .frame(height: IMMLayout.toolbarHeight)
@@ -52,6 +53,22 @@ struct ToolbarView: View {
         .background(WindowDragArea())
         .overlay(alignment: .bottom) {
             Rectangle().fill(IMMColor.border).frame(height: 1)
+        }
+    }
+}
+
+extension View {
+    /// Marks a control that starts a payment. While the connector cannot send money (`available` is false)
+    /// the control is disabled, shows the "Soon" badge and explains why in its tooltip. Give it an action that
+    /// is safe to run anyway; with `available` the control is left untouched.
+    @ViewBuilder
+    func paymentEntryPoint(available: Bool) -> some View {
+        if available {
+            self
+        } else {
+            comingSoonControl(
+                String(localized: "Sending money is coming soon. IMM reads your accounts for now.", bundle: .module),
+                badge: String(localized: "Soon", bundle: .module))
         }
     }
 }

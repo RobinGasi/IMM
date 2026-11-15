@@ -15,6 +15,7 @@ public struct DemoConnector: BankConnector {
     ]
 
     public var id: String { Self.connectorID }
+    public var supportsPayments: Bool { true }
 
     private let behaviour: DemoBankBehaviour
     private let delay: Duration

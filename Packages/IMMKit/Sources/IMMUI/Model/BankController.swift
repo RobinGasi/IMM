@@ -118,6 +118,7 @@ public final class BankController {
         let bankName = pending.bank.name
         let loginID: String?
         do {
+            var importedLoginID: String?
             if connector.id == DemoConnector.connectorID {
                 try await Task.detached(priority: .userInitiated) {
                     let bank = try DemoDataset.load()
@@ -125,15 +126,32 @@ public final class BankController {
                 }.value
             } else {
                 let session = pending.session
-                try await Task.detached(priority: .userInitiated) {
-                    let offered = try await connector.accounts(session).map(\.id)
+                let connectorID = connector.id
+                let bankCode = pending.bank.bankCode
+                importedLoginID = try await Task.detached(priority: .userInitiated) { () -> String? in
+                    let offeredAccounts = try await connector.accounts(session)
+                    let offered = offeredAccounts.map(\.id)
                     let wanted = accountIDs.map { ids in offered.filter(ids.contains) } ?? offered
                     let snapshot = try await connector.fetch(session, accounts: wanted, since: since)
-                    try LedgerImporter.importSnapshot(snapshot, profile: nil, into: ledger)
+                    // All accounts of one sign-in share the login key; it becomes the `bank_login` id so that
+                    // sync and the PIN store find the login. No accounts: nothing to import and no login.
+                    let login = (snapshot.accounts.first?.loginKey).map { key in
+                        LedgerImporter.ImportLogin(
+                            id: key, connectorID: connectorID, bankName: bankName, bankCode: bankCode,
+                            loginName: session.loginName, tanMethod: session.tanMethod)
+                    }
+                    try LedgerImporter.importSnapshot(snapshot, profile: nil, login: login, into: ledger)
+                    return login?.id
                 }.value
             }
             let now = Date()
-            loginID = try await ledger.database.write { db in
+            let imported = importedLoginID
+            loginID = try await ledger.database.write { db -> String? in
+                if let imported {
+                    // Real connector: exactly the login this sign-in created or updated.
+                    try ledger.writer.markAccountsSynced(loginID: imported, at: now, in: db)
+                    return imported
+                }
                 try ledger.writer.markAccountsSynced(at: now, in: db)
                 let logins = try BankLoginRecord.live().order(Column("created_at")).fetchAll(db)
                 return (logins.first { $0.bankName == bankName } ?? logins.first)?.id
@@ -288,6 +306,7 @@ public final class BankController {
     private nonisolated static func reason(for error: Error) -> SyncFailureReason {
         switch error {
         case BankError.pinRejected(let code, let attemptsLeft): return .pinRejected(code: code, attemptsLeft: attemptsLeft)
+        case BankError.bankRejected(_, let message): return .other(message)
         case BankError.maintenance(let until): return .maintenance(until: until)
         case BankError.offline: return .offline
         case BankError.approvalExpired: return .other("The approval request expired.")
@@ -308,8 +327,15 @@ public final class BankController {
 
     nonisolated static func message(for error: Error) -> String {
         switch error {
-        case BankError.pinRejected(let code, let attemptsLeft):
+        case BankError.pinRejected(let code, let attemptsLeft?):
             return String(localized: "The bank rejected this PIN (error \(code)). \(attemptsLeft) attempts left.", bundle: .module)
+        case BankError.pinRejected(let code, nil):
+            return String(localized: "The bank rejected this PIN (error \(code)).", bundle: .module)
+        case BankError.bankRejected(0, let message):
+            // Code 0: IMM's own refusal (unsupported TAN method, unknown bank), not a bank return code.
+            return message
+        case BankError.bankRejected(let code, let message):
+            return String(localized: "The bank refused the request (error \(code)): \(message)", bundle: .module)
         case BankError.maintenance: return String(localized: "The bank is under maintenance.", bundle: .module)
         case BankError.offline: return String(localized: "You appear to be offline.", bundle: .module)
         case BankError.approvalExpired: return String(localized: "The approval request expired.", bundle: .module)

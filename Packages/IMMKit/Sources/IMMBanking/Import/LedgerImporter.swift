@@ -33,6 +33,25 @@ public enum LedgerImportError: Error, Equatable, Sendable {
 /// `sequence` (ties broken by position in the snapshot) and numbered 1, 2, 3 … ; a higher number is
 /// booked later. The ledger orders same-day rows by booked time first, then by this number.
 public enum LedgerImporter {
+    /// The bank login a real connector's accounts belong to. Demo data creates its logins from the profile instead.
+    public struct ImportLogin: Sendable, Hashable {
+        public var id: String
+        public var connectorID: String
+        public var bankName: String
+        public var bankCode: String
+        public var loginName: String
+        public var tanMethod: String
+
+        public init(id: String, connectorID: String, bankName: String, bankCode: String, loginName: String, tanMethod: String) {
+            self.id = id
+            self.connectorID = connectorID
+            self.bankName = bankName
+            self.bankCode = bankCode
+            self.loginName = loginName
+            self.tanMethod = tanMethod
+        }
+    }
+
     /// Imports `snapshot` in one write transaction.
     ///
     /// With a `profile` (the demo data set) the importer also creates the bank logins, categories,
@@ -41,11 +60,15 @@ public enum LedgerImporter {
     /// Without a profile only bank data is written (accounts, transactions, standing orders, holdings,
     /// depot history); transactions are uncategorised and not flagged new.
     ///
+    /// `login` upserts the `bank_login` row before the accounts are imported, so accounts whose `loginKey` is
+    /// `login.id` link to it (`bank_login_id`) and sync finds them. Importing again updates the row in place.
+    ///
     /// Every account gets `last_synced_at` = now and sync status `ok`.
-    public static func importSnapshot(_ snapshot: BankSnapshot, profile: DemoProfile?, into store: LedgerStore) throws {
+    public static func importSnapshot(_ snapshot: BankSnapshot, profile: DemoProfile?, login: ImportLogin? = nil,
+                                      into store: LedgerStore) throws {
         let now = Date()
         try store.database.write { db in
-            try importAll(snapshot, profile: profile, writer: store.writer, db: db, now: now)
+            try importAll(snapshot, profile: profile, login: login, writer: store.writer, db: db, now: now)
         }
     }
 
@@ -67,8 +90,10 @@ public enum LedgerImporter {
 
     // MARK: Import
 
-    private static func importAll(_ snapshot: BankSnapshot, profile: DemoProfile?, writer: LedgerWriter, db: Database, now: Date) throws {
+    private static func importAll(_ snapshot: BankSnapshot, profile: DemoProfile?, login: ImportLogin?, writer: LedgerWriter,
+                                  db: Database, now: Date) throws {
         try importLogins(profile, db: db, now: now)
+        if let login { try upsertLogin(login, db: db, now: now) }
         let categoryIDs = try importCategories(profile, writer: writer, db: db, now: now)
         let accountIDs = try importAccounts(snapshot, profile: profile, writer: writer, db: db, now: now)
         let securityIDs = try importSecurities(snapshot.holdings, profile: profile, writer: writer, db: db, now: now)
@@ -90,19 +115,26 @@ public enum LedgerImporter {
     private static func importLogins(_ profile: DemoProfile?, db: Database, now: Date) throws {
         guard let profile else { return }
         for login in profile.logins {
-            var record = try BankLoginRecord.fetchOne(db, key: login.id)
-                ?? BankLoginRecord(id: login.id, connectorId: login.connectorID, bankName: login.bankName,
-                                   bankCode: login.bankCode, loginName: login.loginName, tanMethod: login.tanMethod,
-                                   createdAt: now, updatedAt: now)
-            record.connectorId = login.connectorID
-            record.bankName = login.bankName
-            record.bankCode = login.bankCode
-            record.loginName = login.loginName
-            record.tanMethod = login.tanMethod
-            record.updatedAt = now
-            record.deletedAt = nil
-            try record.save(db)
+            try upsertLogin(
+                ImportLogin(id: login.id, connectorID: login.connectorID, bankName: login.bankName, bankCode: login.bankCode,
+                            loginName: login.loginName, tanMethod: login.tanMethod),
+                db: db, now: now)
         }
+    }
+
+    private static func upsertLogin(_ login: ImportLogin, db: Database, now: Date) throws {
+        var record = try BankLoginRecord.fetchOne(db, key: login.id)
+            ?? BankLoginRecord(id: login.id, connectorId: login.connectorID, bankName: login.bankName,
+                               bankCode: login.bankCode, loginName: login.loginName, tanMethod: login.tanMethod,
+                               createdAt: now, updatedAt: now)
+        record.connectorId = login.connectorID
+        record.bankName = login.bankName
+        record.bankCode = login.bankCode
+        record.loginName = login.loginName
+        record.tanMethod = login.tanMethod
+        record.updatedAt = now
+        record.deletedAt = nil
+        try record.save(db)
     }
 
     /// Returns category id by category name. New categories get fractional order keys in the profile's order;

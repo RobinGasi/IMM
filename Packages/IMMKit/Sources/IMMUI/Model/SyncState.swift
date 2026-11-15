@@ -3,7 +3,8 @@ import IMMBanking
 
 /// Why one bank could not be updated.
 public enum SyncFailureReason: Hashable, Sendable {
-    case pinRejected(code: Int, attemptsLeft: Int)
+    /// `attemptsLeft` is nil when the bank does not say.
+    case pinRejected(code: Int, attemptsLeft: Int?)
     case maintenance(until: Date)
     case offline
     case other(String)

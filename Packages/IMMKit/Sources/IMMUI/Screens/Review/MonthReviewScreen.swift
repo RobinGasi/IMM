@@ -295,6 +295,7 @@ private struct ReviewLayout: View {
     private func stepButton(_ step: ReviewStepRow) -> some View {
         if let transfer = step.transfer {
             Button {
+                guard model.paymentsAvailable else { return }
                 model.openNewTransfer(TransferDraft(
                     fromAccount: transfer.fromAccountID, recipient: transfer.recipient, iban: transfer.iban,
                     amountMinor: transfer.amount))
@@ -302,6 +303,7 @@ private struct ReviewLayout: View {
                 Text(verbatim: step.actionTitle)
             }
             .immButtonStyle(.default)
+            .paymentEntryPoint(available: model.paymentsAvailable)
         } else {
             Button {} label: {
                 Text(verbatim: step.actionTitle)

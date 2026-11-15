@@ -51,6 +51,8 @@
 			</dict>
 		</dict>
 	</array>
+	<key>IMMFinTSProductID</key>
+	<string>$(IMM_FINTS_PRODUCT_ID)</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>

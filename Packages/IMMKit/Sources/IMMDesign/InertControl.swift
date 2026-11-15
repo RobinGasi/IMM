@@ -29,6 +29,22 @@ private struct InertControlModifier: ViewModifier {
     }
 }
 
+/// `InertControlModifier` plus a badge placed after the control. The badge is decoration: it takes no
+/// clicks and is hidden from accessibility (the hint on the control carries the message).
+private struct ComingSoonModifier: ViewModifier {
+    let help: String
+    let badge: String
+
+    func body(content: Content) -> some View {
+        HStack(spacing: 6) {
+            content.modifier(InertControlModifier(help: help))
+            Badge(verbatim: badge, variant: .outline)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
 /// The button style under `IMMSwitch` and `IMMCheckbox`. Unlike `.plain`, it never dims its label when the
 /// control is disabled, so `.inertControl()` keeps the enabled look; the controls draw their own
 /// disabled state (`opacity(isEnabled || inert ? 1 : 0.5)`).
@@ -41,5 +57,12 @@ struct IMMBareButtonStyle: ButtonStyle {
 extension View {
     public func inertControl(_ help: String = IMMInert.helpText) -> some View {
         modifier(InertControlModifier(help: help))
+    }
+
+    /// `inertControl` for a feature that is planned but not built yet (sending money): the same disabled
+    /// look-alike with `help` as tooltip and accessibility hint, plus a small outline `badge` ("Soon")
+    /// placed to the right of the control. The view grows by the badge width and spacing.
+    public func comingSoonControl(_ help: String, badge: String) -> some View {
+        modifier(ComingSoonModifier(help: help, badge: badge))
     }
 }

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.052.001.02">
+  <BkToCstmrAcctRpt>
+    <GrpHdr>
+      <MsgId>RPT-20260512-0007</MsgId>
+      <CreDtTm>2026-05-12T14:03:09.000+02:00</CreDtTm>
+    </GrpHdr>
+    <Rpt>
+      <Id>RPT-0007</Id>
+      <CreDtTm>2026-05-12T14:03:09.000+02:00</CreDtTm>
+      <Acct>
+        <Id>
+          <IBAN>DE02120300000000202051</IBAN>
+        </Id>
+        <Ccy>EUR</Ccy>
+      </Acct>
+      <Ntry>
+        <Amt Ccy="EUR">75.30</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts>BOOK</Sts>
+        <BookgDt>
+          <Dt>2026-05-12</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2026-05-12</Dt>
+        </ValDt>
+        <AcctSvcrRef>2026051200004711</AcctSvcrRef>
+        <BkTxCd>
+          <Prtry>
+            <Cd>NTRF+052+9310</Cd>
+            <Issr>DK</Issr>
+          </Prtry>
+        </BkTxCd>
+        <NtryDtls>
+          <TxDtls>
+            <Refs>
+              <EndToEndId>REFUND-0001</EndToEndId>
+            </Refs>
+            <RltdPties>
+              <Dbtr>
+                <Nm>Beispiel Versand GmbH</Nm>
+              </Dbtr>
+              <DbtrAcct>
+                <Id>
+                  <IBAN>DE27100777770209299700</IBAN>
+                </Id>
+              </DbtrAcct>
+            </RltdPties>
+            <RltdAgts>
+              <DbtrAgt>
+                <FinInstnId>
+                  <BIC>NORSDE51XXX</BIC>
+                </FinInstnId>
+              </DbtrAgt>
+            </RltdAgts>
+            <RmtInf>
+              <Ustrd>Erstattung Bestellung 10023</Ustrd>
+            </RmtInf>
+          </TxDtls>
+          <TxDtls>
+            <Refs>
+              <EndToEndId>REFUND-0002</EndToEndId>
+            </Refs>
+            <RltdPties>
+              <Dbtr>
+                <Nm>Beispiel Versand GmbH</Nm>
+              </Dbtr>
+            </RltdPties>
+            <RmtInf>
+              <Ustrd>Erstattung Bestellung 10031</Ustrd>
+            </RmtInf>
+          </TxDtls>
+        </NtryDtls>
+        <AddtlNtryInf>Sammelgutschrift</AddtlNtryInf>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">19.90</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts>PDNG</Sts>
+        <BookgDt>
+          <Dt>2026-05-12</Dt>
+        </BookgDt>
+        <AcctSvcrRef>NONREF</AcctSvcrRef>
+        <BkTxCd>
+          <Prtry>
+            <Cd>NMSC+106+9310</Cd>
+            <Issr>DK</Issr>
+          </Prtry>
+        </BkTxCd>
+        <NtryDtls>
+          <TxDtls>
+            <RltdPties>
+              <Cdtr>
+                <Nm>Tankstelle Am Ring</Nm>
+              </Cdtr>
+            </RltdPties>
+            <RmtInf>
+              <Ustrd>Tankstelle Am Ring Debitk. 1</Ustrd>
+            </RmtInf>
+          </TxDtls>
+        </NtryDtls>
+        <AddtlNtryInf>Kartenzahlung (vorgemerkt)</AddtlNtryInf>
+      </Ntry>
+      <Ntry>
+        <Amt Ccy="EUR">5.00</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts>PDNG</Sts>
+        <ValDt>
+          <Dt>2026-05-13</Dt>
+        </ValDt>
+        <NtryDtls>
+          <TxDtls>
+            <AddtlTxInf>Vormerkung Dauerauftrag Vereinsbeitrag</AddtlTxInf>
+          </TxDtls>
+        </NtryDtls>
+      </Ntry>
+    </Rpt>
+  </BkToCstmrAcctRpt>
+</Document>

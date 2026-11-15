@@ -26,7 +26,7 @@ public struct PINSheet: View {
         model.bank.syncState.byBank.first { if case .pinRejected = $0.reason { return true } else { return false } }
     }
 
-    private var rejection: (code: Int, attemptsLeft: Int)? {
+    private var rejection: (code: Int, attemptsLeft: Int?)? {
         guard !edited, !startsClean, let rejected, case .pinRejected(let code, let attemptsLeft) = rejected.reason else { return nil }
         return (code, attemptsLeft)
     }
@@ -77,10 +77,15 @@ public struct PINSheet: View {
         return String(localized: "Anmeldename at \(bank)", bundle: .module)
     }
 
-    static func rejectionText(_ rejection: (code: Int, attemptsLeft: Int)) -> String {
+    static func rejectionText(_ rejection: (code: Int, attemptsLeft: Int?)) -> String {
         let code = String(rejection.code)
+        guard let attemptsLeft = rejection.attemptsLeft else {
+            return String(
+                localized: "The bank rejected this PIN (error \(code)). Too many wrong attempts lock your online banking.",
+                bundle: .module)
+        }
         return String(
-            localized: "The bank rejected this PIN (error \(code)). After 3 wrong attempts the bank locks online banking; you have \(rejection.attemptsLeft) left.",
+            localized: "The bank rejected this PIN (error \(code)). After 3 wrong attempts the bank locks online banking; you have \(attemptsLeft) left.",
             bundle: .module)
     }
 

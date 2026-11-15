@@ -83,6 +83,23 @@ After editing `Local.xcconfig`, rebuild; regenerating the project is not needed.
 
 The sync agent's app group and Mach service carry the team ID literally, because launchd and the sandbox read them before any build setting applies. With another team, replace `HHK7S6D2TR` in `Agent/IMMSyncAgent.entitlements`, `Agent/dev.gasi.imm.sync-agent.plist`, `App/IMM.entitlements`, `App/IMM-Unsigned.entitlements` and `Packages/IMMKit/Sources/IMMSyncCore/Agent/AgentConstants.swift`.
 
+## FinTS bank access
+
+The FinTS connector (`Packages/IMMKit/Sources/IMMFinTS/`) is read-only: SEPA accounts (`HKSPA`), balances (`HKSAL`) and statements (`HKCAZ` camt.052/053, else `HKKAZ` MT940/MT942), with strong customer authentication by decoupled TAN methods (approval in the bank's app). It needs two things the Deutsche Kreditwirtschaft hands out only after a free product registration at [fints.org › Produktregistrierung](https://www.fints.org/de/hersteller/produktregistrierung):
+
+1. **The registration number.** Set it in `Config/Local.xcconfig` (or `Config/Base.xcconfig` for official builds):
+   ```xcconfig
+   IMM_FINTS_PRODUCT_ID = <registration number>
+   ```
+   It reaches the app as the `Info.plist` key `IMMFinTSProductID` and is sent in every dialog (`HKVVB`). Library registration numbers must not be used in a shipped app.
+2. **The FinTS bank list** (`fints_institute.csv`). Convert it into the bundled directory:
+   ```sh
+   swift Tools/import-fints-banks.swift fints_institute.csv > Packages/IMMKit/Sources/IMMFinTS/Resources/FinTSBanks.json
+   ```
+   Check the list's terms before committing the generated file.
+
+`AppModel.makeDefaultConnector()` picks the FinTS connector when both are present and the demo connector otherwise; the Debug demo vault always uses the demo connector. The connector keeps the FinTS system id and the chosen TAN method per login in `UserDefaults` (never the PIN). Payment controls show "Soon" because the connector reports `supportsPayments == false`.
+
 ## Debug demo vault and Debug menu
 
 Debug builds accept a launch argument that creates a demo database, imports the demo ledger, unlocks it and opens the main window:

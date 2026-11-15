@@ -15,7 +15,7 @@ public struct StandingOrdersScreen: View {
     public var body: some View {
         Group {
             if let snapshot = orders.snapshot {
-                StandingOrdersLayout(snapshot: snapshot) {
+                StandingOrdersLayout(snapshot: snapshot, paymentsAvailable: model.paymentsAvailable) {
                     let first = snapshot.today.adding(months: 1).firstOfMonth
                     model.openNewTransfer(TransferDraft(execution: .standingOrder(firstExecution: first)))
                 }
@@ -35,6 +35,8 @@ private let orderColumns: [SOCColumn] = [.fr(1), .fr(0.8), .fixed(150), .fixed(1
 
 struct StandingOrdersLayout: View {
     let snapshot: StandingOrdersSnapshot
+    /// False while the connector cannot send money: "New standing order" is then disabled with a "Soon" badge.
+    var paymentsAvailable = true
     let newOrder: () -> Void
 
     @Environment(\.immWindowWidth) private var windowWidth
@@ -121,13 +123,16 @@ struct StandingOrdersLayout: View {
             .immFont(.small)
             .foregroundStyle(IMMColor.mutedForeground)
             .lineLimit(1)
-        let button = Button(action: newOrder) {
+        let button = Button {
+            if paymentsAvailable { newOrder() }
+        } label: {
             HStack(spacing: 4) {
                 IMMIcon("plus", size: IMMButtonStyle.Size.default.iconSize)
                 Text("New standing order", bundle: .module)
             }
         }
         .immButtonStyle(.default)
+        .paymentEntryPoint(available: paymentsAvailable)
 
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 12) {

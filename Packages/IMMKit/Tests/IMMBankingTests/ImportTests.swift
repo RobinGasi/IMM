@@ -89,6 +89,31 @@ private func money(_ cents: Int) -> String { MoneyFormatter.string(cents) }
         #expect(try fixture.store.setting(.demoOnly) == nil)
     }
 
+    @Test func importWithLoginCreatesTheLoginOnceAndLinksAccounts() throws {
+        let fixture = try ImportFixture(import: false)
+        let loginKey = "fints-12345678-abcdef0123"
+        let account = BankAccount(
+            id: "DE02120300000000202051", kind: .giro, name: "Girokonto", bankName: "Testbank", iban: "DE02120300000000202051",
+            number: nil, subtitle: "Testbank · DE02 1203 0000 0020 2051", balance: 12_345, overdraftLimit: nil, statementNote: nil,
+            loginKey: loginKey, sortOrder: 0)
+        let snapshot = BankSnapshot(accounts: [account], transactions: [], standingOrders: [], holdings: [], depotValueHistory: [])
+        let login = LedgerImporter.ImportLogin(
+            id: loginKey, connectorID: "fints", bankName: "Testbank", bankCode: "12345678", loginName: "user", tanMethod: "pushTAN")
+
+        try LedgerImporter.importSnapshot(snapshot, profile: nil, login: login, into: fixture.store)
+        try LedgerImporter.importSnapshot(snapshot, profile: nil, login: login, into: fixture.store)
+
+        let (logins, linked) = try fixture.store.database.read { db in
+            (try BankLoginRecord.fetchAll(db), try String.fetchAll(db, sql: "SELECT bank_login_id FROM account"))
+        }
+        #expect(logins.count == 1)
+        #expect(logins.first?.id == loginKey)
+        #expect(logins.first?.connectorId == "fints")
+        #expect(logins.first?.bankCode == "12345678")
+        #expect(logins.first?.loginName == "user")
+        #expect(linked == [loginKey])
+    }
+
     @Test func importFailsAtomically() throws {
         let fixture = try ImportFixture(import: false)
         var snapshot = fixture.bank.snapshot

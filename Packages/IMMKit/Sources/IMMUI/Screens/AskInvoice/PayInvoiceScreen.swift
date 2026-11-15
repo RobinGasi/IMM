@@ -24,7 +24,9 @@ public struct PayInvoiceScreen: View {
         HStack(spacing: 0) {
             InvoicePane(windowWidth: windowWidth)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            InvoiceInspector(form: $form, snapshot: invoice.snapshot, width: asideWidth, schedule: schedule, cancel: cancel)
+            InvoiceInspector(
+                form: $form, snapshot: invoice.snapshot, width: asideWidth, paymentsAvailable: model.paymentsAvailable,
+                schedule: schedule, cancel: cancel)
                 .frame(width: asideWidth)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -35,7 +37,7 @@ public struct PayInvoiceScreen: View {
     }
 
     private func schedule() {
-        guard let snapshot = invoice.snapshot, let order = form.order(snapshot: snapshot) else { return }
+        guard model.paymentsAvailable, let snapshot = invoice.snapshot, let order = form.order(snapshot: snapshot) else { return }
         model.submitInvoicePayment(order)
     }
 
@@ -67,6 +69,7 @@ extension AppModel {
     /// Standing orders and an immediate one the source account's transactions; the sheet's Done button
     /// closes the sheet. Cancelling or a failed request leaves the invoice on screen.
     func submitInvoicePayment(_ order: PaymentOrder) {
+        guard paymentsAvailable else { return }
         let task = bank.submit(order)
         Task { @MainActor in
             await task.value
@@ -341,6 +344,7 @@ private struct InvoiceInspector: View {
     @Binding var form: InvoiceForm
     let snapshot: PayInvoiceSnapshot?
     let width: CGFloat
+    let paymentsAvailable: Bool
     let schedule: () -> Void
     let cancel: () -> Void
 
@@ -516,6 +520,7 @@ private struct InvoiceInspector: View {
                 Button(action: schedule) { scheduleTitle }
                     .immButtonStyle(.default)
                     .disabled(snapshot.flatMap { form.order(snapshot: $0) } == nil)
+                    .paymentEntryPoint(available: paymentsAvailable)
             }
             HStack(spacing: 12) {
                 HStack(spacing: 6) {

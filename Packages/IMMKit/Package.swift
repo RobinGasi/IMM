@@ -11,6 +11,7 @@ let package = Package(
         .library(name: "IMMVault", targets: ["IMMVault"]),
         .library(name: "IMMLedger", targets: ["IMMLedger"]),
         .library(name: "IMMBanking", targets: ["IMMBanking"]),
+        .library(name: "IMMFinTS", targets: ["IMMFinTS"]),
         .library(name: "IMMDesign", targets: ["IMMDesign"]),
         .library(name: "IMMUI", targets: ["IMMUI"]),
         .library(name: "IMMSyncCore", targets: ["IMMSyncCore"]),
@@ -51,6 +52,13 @@ let package = Package(
             resources: [.process("Resources")],
             swiftSettings: codec
         ),
+        // FinTS 3.0 PIN/TAN client and the `BankConnector` built on it (read-only: accounts, balances, statements).
+        .target(
+            name: "IMMFinTS",
+            dependencies: ["IMMBanking", "IMMLedger"],
+            resources: [.process("Resources")],
+            swiftSettings: codec
+        ),
         .target(
             name: "IMMDesign",
             resources: [.process("Resources")]
@@ -79,6 +87,7 @@ let package = Package(
                 "IMMVault",
                 "IMMLedger",
                 "IMMBanking",
+                "IMMFinTS",
                 "IMMDesign",
                 .product(name: "GRDB", package: "GRDB.swift"),
             ],
@@ -114,6 +123,12 @@ let package = Package(
             name: "IMMBankingTests",
             dependencies: ["IMMBanking", "IMMLedger", "IMMVault", .product(name: "GRDB", package: "GRDB.swift")],
             exclude: ["Fixtures"],
+            swiftSettings: codec
+        ),
+        .testTarget(
+            name: "IMMFinTSTests",
+            dependencies: ["IMMFinTS", "IMMBanking", "IMMLedger"],
+            resources: [.copy("Fixtures")],
             swiftSettings: codec
         ),
         .testTarget(

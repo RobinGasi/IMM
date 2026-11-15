@@ -31,9 +31,11 @@ public struct AppCommands: Commands {
         }
 
         CommandGroup(replacing: .newItem) {
-            Button(String(localized: "New Transfer", bundle: .module)) { model.openNewTransfer() }
+            Button(model.paymentsAvailable
+                ? String(localized: "New Transfer", bundle: .module)
+                : String(localized: "New Transfer (Soon)", bundle: .module)) { model.openNewTransfer() }
                 .keyboardShortcut("n", modifiers: .command)
-                .disabled(!isReady)
+                .disabled(!isReady || !model.paymentsAvailable)
             Button(String(localized: "Open Database…", bundle: .module)) { model.chooseDatabase() }
                 .keyboardShortcut("o", modifiers: .command)
         }

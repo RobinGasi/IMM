@@ -2,6 +2,7 @@ import AppKit
 import Foundation
 import GRDB
 import IMMBanking
+import IMMFinTS
 import IMMLedger
 import IMMSync
 import IMMVault
@@ -130,6 +131,9 @@ public final class AppModel {
     // MARK: Init
 
     /// - Parameters:
+    ///   - connector: the bank connector; the default is `makeDefaultConnector()` (FinTS when the build has a
+    ///     registered product id, otherwise the demo bank). Debug builds launched with `-IMMDemoVault YES` always use
+    ///     the demo connector, whatever is passed, so the demo vault's logins sync against the demo data.
     ///   - clock: time source of the inactivity timer (tests advance it by hand).
     ///   - autoStart: resolves the remembered database (and, in debug builds, the `-IMMDemoVault YES`
     ///     launch argument). Tests and previews pass `false`.
@@ -137,7 +141,7 @@ public final class AppModel {
         biometricStore: any BiometricKeyStore = KeychainBiometricKeyStore(),
         pinStore: any PINStore = KeychainPINStore(),
         bookmarks: VaultBookmarks = VaultBookmarks(),
-        connector: any BankConnector = DemoConnector(),
+        connector: any BankConnector = AppModel.makeDefaultConnector(),
         sync: SyncService = SyncService(),
         defaults: UserDefaults = .standard,
         clock: @escaping @MainActor () -> ContinuousClock.Instant = { ContinuousClock.now },
@@ -153,6 +157,9 @@ public final class AppModel {
         self.autoLockMinutes = minutes
         self.lockOnSleep = sleep
         self.monitor = LockMonitor(autoLockMinutes: minutes > 0 ? minutes : nil, lockOnSleep: sleep, now: clock)
+        #if DEBUG
+        let connector: any BankConnector = autoStart && defaults.bool(forKey: "IMMDemoVault") ? DemoConnector() : connector
+        #endif
         self.bank = BankController(connector: connector, pinStore: pinStore)
         self.sync = sync
         self.bank.model = self
@@ -183,6 +190,20 @@ public final class AppModel {
             Task { @MainActor [weak self] in await self?.startDemoVault() }
         }
         #endif
+    }
+
+    /// The connector of a normal launch. FinTS when `IMMFinTSProductID` (from `IMM_FINTS_PRODUCT_ID` in the build
+    /// settings) is set and the bundled bank list loads and is not empty; otherwise the demo bank.
+    public static func makeDefaultConnector(bundle: Bundle = .main) -> any BankConnector {
+        let productID = (bundle.object(forInfoDictionaryKey: "IMMFinTSProductID") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !productID.isEmpty, let directory = try? FinTSBankDirectory.bundled(), !directory.isEmpty else {
+            return DemoConnector()
+        }
+        let version = String((bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0").prefix(5))
+        return FinTSConnector(
+            product: FinTSProduct(id: productID, version: version), directory: directory,
+            stateStore: UserDefaultsFinTSStateStore())
     }
 
     /// A model that starts in `.ready` on `store` (screenshot tests and previews). Nothing touches the
@@ -544,8 +565,12 @@ public final class AppModel {
         route = .transactions(.account(accountID))
     }
 
+    /// Whether the connected bank connector can send money. False for read-only connectors (FinTS):
+    /// every payment entry point shows "Soon" and `openNewTransfer` does nothing.
+    public var paymentsAvailable: Bool { bank.connector.supportsPayments }
+
     public func openNewTransfer(_ draft: TransferDraft? = nil) {
-        guard phase == .ready else { return }
+        guard phase == .ready, paymentsAvailable else { return }
         panel = .newTransfer(draft)
     }
 

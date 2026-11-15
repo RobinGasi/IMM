@@ -1160,6 +1160,9 @@
     "New Transfer" : {
 
     },
+    "New Transfer (Soon)" : {
+
+    },
     "New budget" : {
 
     },
@@ -1483,6 +1486,9 @@
     "Send a new request" : {
 
     },
+    "Sending money is coming soon. IMM reads your accounts for now." : {
+
+    },
     "Sent to bank" : {
 
     },
@@ -1526,6 +1532,9 @@
 
     },
     "Sign in to see your accounts." : {
+
+    },
+    "Soon" : {
 
     },
     "Sources" : {
@@ -1687,6 +1696,16 @@
     "The bank is under maintenance." : {
 
     },
+    "The bank refused the request (error %lld): %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The bank refused the request (error %1$lld): %2$@"
+          }
+        }
+      }
+    },
     "The bank rejected this PIN (error %@). After 3 wrong attempts the bank locks online banking; you have %lld left." : {
       "localizations" : {
         "en" : {
@@ -1696,6 +1715,12 @@
           }
         }
       }
+    },
+    "The bank rejected this PIN (error %@). Too many wrong attempts lock your online banking." : {
+
+    },
+    "The bank rejected this PIN (error %lld)." : {
+
     },
     "The bank rejected this PIN (error %lld). %lld attempts left." : {
       "localizations" : {

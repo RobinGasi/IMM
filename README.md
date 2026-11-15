@@ -17,21 +17,21 @@
 </p>
 
 > [!IMPORTANT]
-> **Early preview (0.1.0).** IMM cannot talk to real banks yet. The only bank connection is a demo bank that loads a sample ledger, so everything in the screenshot is made-up data. A FinTS connector for German banks comes next.
+> **Early preview.** Released builds still connect only to a demo bank that loads a sample ledger, so everything in the screenshot is made-up data. A read-only FinTS connector for German banks (accounts, balances, statements) is built and switches on once IMM's FinTS product registration with the Deutsche Kreditwirtschaft is granted.
 
 ## What IMM does
 
 - **Overview** of net worth, spending this month against your average, upcoming payments and what needs attention.
 - **Transactions** for every account or all of them, with running balances, filters, search and an inspector for categories, notes and rules.
 - **Budgets, standing orders, contracts, a depot, categories,** a monthly review and a tax-return overview, all computed from one ledger.
-- **Transfers and scheduled payments** with TAN approval (simulated by the demo bank).
+- **Transfers and scheduled payments** with TAN approval (simulated by the demo bank; with real banks the payment controls show "Soon" until sending is built).
 - **Your data stays yours:** one encrypted `.imm` database you create and unlock with a password or Touch ID. IMM locks itself after inactivity or when your Mac sleeps.
 - **Sync between your own devices** over [Tailscale](https://tailscale.com), end-to-end encrypted, with an optional encrypted iCloud relay for when the other device is asleep. The Mac never listens on your Wi-Fi.
 - Native SwiftUI, light and dark appearance, window sizes down to 1024 × 720.
 
 ## Status and limitations
 
-- **Bank access is a demo connector**, there for development and screenshots: every bank in the list answers, any login works, and finishing onboarding loads one sample ledger with five accounts. Payments are approved after three seconds and booked. FinTS, then file import, are planned.
+- **Bank access.** Builds without a FinTS product registration number use the demo connector, there for development and screenshots: every bank in the list answers, any login works, and finishing onboarding loads one sample ledger with five accounts; payments are approved after three seconds and booked. With a registration number and the FinTS bank list, IMM uses its FinTS connector instead: read-only (accounts, balances, statements as camt or MT940), sign-in approved in the bank's app (pushTAN and other decoupled methods only; chipTAN, photoTAN and smsTAN are not supported), and every payment control shows "Soon". File import is planned.
 - **The demo ledger treats 12.11.2026 as "today"** while the database holds only demo data. Lock timers and sync times use the real clock.
 - **AI screens show stored content.** Ask, Suggestions, the monthly review, Pay invoice and Tax return display prepared content; no model runs and no PDF is read.
 - **Some controls are placeholders.** Controls without a working target look as designed, do nothing and show the tooltip "Not available in this version". In Settings only Security and Sync work.
