@@ -1,11 +1,15 @@
+#if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 import SwiftUI
 
 /// Design icon names (Lucide) mapped to SF Symbols.
 public enum IMMSymbol {
     public struct Entry: Sendable, Equatable {
         public let symbol: String
-        /// Used when `NSImage(systemSymbolName:)` returns nil for `symbol` on this macOS.
+        /// Used when the system has no symbol named `symbol` (`NSImage(systemSymbolName:)` / `UIImage(systemName:)` return nil).
         public let fallback: String?
 
         public init(_ symbol: String, fallback: String? = nil) {
@@ -56,14 +60,20 @@ public enum IMMSymbol {
         "attach": Entry("paperclip"),
     ]
 
+    private static func symbolExists(_ name: String) -> Bool {
+        #if canImport(AppKit)
+        NSImage(systemSymbolName: name, accessibilityDescription: nil) != nil
+        #else
+        UIImage(systemName: name) != nil
+        #endif
+    }
+
     private static let resolvedTable: [String: String] = {
         var result: [String: String] = [:]
         for (icon, entry) in table {
-            if NSImage(systemSymbolName: entry.symbol, accessibilityDescription: nil) != nil {
+            if symbolExists(entry.symbol) {
                 result[icon] = entry.symbol
-            } else if let fallback = entry.fallback,
-                NSImage(systemSymbolName: fallback, accessibilityDescription: nil) != nil
-            {
+            } else if let fallback = entry.fallback, symbolExists(fallback) {
                 result[icon] = fallback
             }
         }

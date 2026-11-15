@@ -87,6 +87,9 @@ public struct PairingOffer: Sendable, Equatable {
     public func qrImage(size: Int = 280) -> CGImage? { QRCode.image(for: qrPayload, size: size) }
 }
 
+/// The QR payload: one JSON object with sorted keys, e.g.
+/// `{"agent":"<base64>","device":"ab12","expiry":1800000000,"host":"mac.tail1234.ts.net","name":"Robin's MacBook","port":47380,"secret":"K7QM-…","v":1}`.
+/// `name` (the Mac's display name) is optional and omitted when nil; readers ignore keys they do not know and accept payloads without it.
 public enum PairingPayload {
     struct Wire: Codable {
         var v: Int
@@ -96,12 +99,15 @@ public enum PairingPayload {
         var expiry: Double
         var host: String
         var port: Int
+        var name: String?
     }
 
-    static func make(node: DeviceNodeID, agentKey: Data, secret: PairingSecret, expiry: Date, host: String, port: UInt16) -> String {
+    static func make(
+        node: DeviceNodeID, agentKey: Data, secret: PairingSecret, expiry: Date, host: String, port: UInt16, name: String? = nil
+    ) -> String {
         let wire = Wire(
             v: 1, device: String(node, radix: 16), agent: agentKey, secret: secret.code, expiry: expiry.timeIntervalSince1970,
-            host: host, port: Int(port))
+            host: host, port: Int(port), name: name)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return String(decoding: (try? encoder.encode(wire)) ?? Data(), as: UTF8.self)
@@ -117,14 +123,20 @@ public struct PairingInvite: Sendable, Equatable {
     public var port: UInt16?
     public var expiry: Date?
     public var hubNode: DeviceNodeID?
+    /// The Mac's display name from the QR payload; nil for typed codes and older payloads.
+    public var hubName: String?
 
-    public init(secret: PairingSecret, agentKey: Data? = nil, host: String? = nil, port: UInt16? = nil, expiry: Date? = nil, hubNode: DeviceNodeID? = nil) {
+    public init(
+        secret: PairingSecret, agentKey: Data? = nil, host: String? = nil, port: UInt16? = nil, expiry: Date? = nil,
+        hubNode: DeviceNodeID? = nil, hubName: String? = nil
+    ) {
         self.secret = secret
         self.agentKey = agentKey
         self.host = host
         self.port = port
         self.expiry = expiry
         self.hubNode = hubNode
+        self.hubName = hubName
     }
 
     /// Parses the QR JSON (`{"v":1,…}`) or a bare code (`K7QM-4TZP-X2WD-6HNA`).
@@ -139,7 +151,7 @@ public struct PairingInvite: Sendable, Equatable {
             }
             self.init(
                 secret: secret, agentKey: wire.agent, host: wire.host, port: UInt16(clamping: wire.port),
-                expiry: Date(timeIntervalSince1970: wire.expiry), hubNode: UInt64(wire.device, radix: 16))
+                expiry: Date(timeIntervalSince1970: wire.expiry), hubNode: UInt64(wire.device, radix: 16), hubName: wire.name)
         } else {
             guard let bytes = PairingCodeFormat.decode(trimmed), let secret = PairingSecret(bytes: bytes) else {
                 throw SyncError.invalidInvite("the pairing code is 16 letters and digits (A–Z, 2–7), for example K7QM-4TZP-X2WD-6HNA")

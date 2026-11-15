@@ -33,7 +33,11 @@ public struct VaultBookmarks: Sendable {
     // MARK: Last vault
 
     public func saveLastVault(_ url: URL) throws {
+        #if os(macOS)
         let options: URL.BookmarkCreationOptions = securityScoped ? [.withSecurityScope] : []
+        #else
+        let options: URL.BookmarkCreationOptions = []  // security-scoped bookmarks are macOS-only
+        #endif
         let data = try url.bookmarkData(options: options, includingResourceValuesForKeys: nil, relativeTo: nil)
         defaults.set(data, forKey: Self.bookmarkKey)
         defaults.set(url.path, forKey: Self.pathKey)
@@ -43,7 +47,11 @@ public struct VaultBookmarks: Sendable {
     /// target no longer exists. The caller must call `startAccessingSecurityScopedResource()` on the result.
     public func resolveLastVault() -> URL? {
         guard let data = defaults.data(forKey: Self.bookmarkKey) else { return nil }
+        #if os(macOS)
         let options: URL.BookmarkResolutionOptions = securityScoped ? [.withSecurityScope, .withoutUI] : [.withoutUI]
+        #else
+        let options: URL.BookmarkResolutionOptions = [.withoutUI]
+        #endif
         var stale = false
         guard let url = try? URL(resolvingBookmarkData: data, options: options, relativeTo: nil, bookmarkDataIsStale: &stale) else {
             return nil

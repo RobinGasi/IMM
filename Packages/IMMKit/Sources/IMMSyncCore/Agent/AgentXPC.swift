@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import Security
 
@@ -482,3 +483,4 @@ public final class AgentXPCClient: @unchecked Sendable {
         return try decode(AgentCommandResult.self, data).value
     }
 }
+#endif

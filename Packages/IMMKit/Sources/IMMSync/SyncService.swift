@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import GRDB
 import IMMLedger
@@ -256,7 +257,8 @@ public final class SyncService {
             guard current() else { return }
             let engine = try SyncEngine(ledger: ledger, deviceName: deviceName)
             let coordinator = SyncCoordinator(
-                engine: engine, publishDelay: publishDelay, makeClient: makeClient, resolveHost: resolveHost, relayProvider: relayProvider,
+                engine: engine, publishDelay: publishDelay, deviceName: deviceName, makeClient: makeClient, resolveHost: resolveHost,
+                relayProvider: relayProvider,
                 report: { [weak self] update in
                     Task { @MainActor in self?.apply(update, token: token) }
                 })
@@ -462,3 +464,4 @@ public final class SyncService {
         }
     }
 }
+#endif

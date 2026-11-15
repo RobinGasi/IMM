@@ -6,7 +6,8 @@ let codec: [SwiftSetting] = [.define("SQLITE_HAS_CODEC")]
 let package = Package(
     name: "IMMKit",
     defaultLocalization: "en",
-    platforms: [.macOS(.v26)],
+    // iOS: the iPhone companion links IMMCompanion and the shared modules below it; IMMUI stays Mac-only.
+    platforms: [.macOS(.v26), .iOS(.v26)],
     products: [
         .library(name: "IMMVault", targets: ["IMMVault"]),
         .library(name: "IMMLedger", targets: ["IMMLedger"]),
@@ -14,6 +15,7 @@ let package = Package(
         .library(name: "IMMFinTS", targets: ["IMMFinTS"]),
         .library(name: "IMMDesign", targets: ["IMMDesign"]),
         .library(name: "IMMUI", targets: ["IMMUI"]),
+        .library(name: "IMMCompanion", targets: ["IMMCompanion"]),
         .library(name: "IMMSyncCore", targets: ["IMMSyncCore"]),
         .library(name: "IMMSync", targets: ["IMMSync"]),
         .executable(name: "imm-demo-report", targets: ["IMMDemoReport"]),
@@ -94,6 +96,20 @@ let package = Package(
             resources: [.process("Resources")],
             swiftSettings: codec
         ),
+        // The iPhone companion: model and SwiftUI screens. Compiles on macOS too, so `swift test` covers it.
+        .target(
+            name: "IMMCompanion",
+            dependencies: [
+                "IMMSync",
+                "IMMSyncCore",
+                "IMMVault",
+                "IMMLedger",
+                "IMMDesign",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ],
+            resources: [.process("Resources")],
+            swiftSettings: codec
+        ),
         .executableTarget(
             name: "IMMDemoReport",
             dependencies: [
@@ -107,6 +123,11 @@ let package = Package(
         .executableTarget(
             name: "IMMSyncPeer",
             dependencies: ["IMMSync", "IMMSyncCore", "IMMBanking", "IMMLedger", "IMMVault", .product(name: "GRDB", package: "GRDB.swift")],
+            swiftSettings: codec
+        ),
+        .testTarget(
+            name: "IMMCompanionTests",
+            dependencies: ["IMMCompanion", "IMMSync", "IMMSyncCore", "IMMVault", "IMMLedger", .product(name: "GRDB", package: "GRDB.swift")],
             swiftSettings: codec
         ),
         .testTarget(

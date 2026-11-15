@@ -79,11 +79,43 @@ targets:
         ENABLE_DEBUG_DYLIB: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: ""
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: ""
+  IMMPhone:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    # Build settings: Config/Phone.xcconfig (overrides the project-level macOS settings of Base/Signed).
+    configFiles:
+      Debug: Config/Phone.xcconfig
+      Release: Config/Phone.xcconfig
+      Debug-Unsigned: Config/Phone.xcconfig
+    settings:
+      base:
+        # Empty under automatic signing. Tools/release-ios.sh sets it (profile UUID) for manual App Store signing on CI.
+        # Only this target gets a profile; the package targets cannot be signed manually.
+        PROVISIONING_PROFILE_SPECIFIER: $(IMM_PHONE_PROFILE)
+    sources:
+      - path: Phone
+        excludes:
+          - Info.plist
+          - "*.entitlements"
+    dependencies:
+      - package: IMMKit
+        product: IMMCompanion
 schemes:
   IMM:
     build:
       targets:
         IMM: all
+    run:
+      config: Debug
+    profile:
+      config: Release
+    archive:
+      config: Release
+  IMMPhone:
+    build:
+      targets:
+        IMMPhone: all
     run:
       config: Debug
     profile:

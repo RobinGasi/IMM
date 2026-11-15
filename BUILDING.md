@@ -146,7 +146,7 @@ IMM_README_SCREENSHOT=1 swift test --package-path Packages/IMMKit --filter Readm
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs on every push and pull request, on GitHub's `xcode-27` macOS runner: it builds the `Debug-Unsigned` app (no signing secrets are needed or stored) and runs `swift test`. The design-diff images are uploaded as a workflow artifact. Dependabot keeps the actions and Swift packages current.
+`.github/workflows/ci.yml` runs on every push and pull request, on GitHub's `xcode-27` macOS runner: it builds the `Debug-Unsigned` app (no signing secrets are needed or stored), builds the iPhone app `IMMPhone` for `generic/platform=iOS` with `CODE_SIGNING_ALLOWED=NO`, and runs `swift test`. The design-diff images are uploaded as a workflow artifact. Dependabot keeps the actions and Swift packages current.
 
 ### Demo figures
 
@@ -193,6 +193,54 @@ The relay lets a device sync while the other is asleep, locked or offline: every
 - **Tests.** `swift test --filter Relay`: replicas that exchange only through `InMemoryRelayStore` (no CloudKit).
 - **Self-test against the real service** (Debug builds, signed): `build/dd/Build/Products/Debug/IMM.app/Contents/MacOS/IMM -IMMCloudKitSelfTest YES -ApplePersistenceIgnoreState YES`. It creates two temporary vaults, pairs them offline, exchanges edits through zone `imm-sync-selftest` in the Development environment with explicit `sendChanges` / `fetchChanges`, prints `CLOUDKIT SELFTEST PASS` or `FAIL`, deletes the zone and the vaults, and exits. It measures round trips through the server, not push latency (CloudKit never pushes to the device that made a change).
 - **Production deploy (maintainer steps, once per container).** (1) The App ID has iCloud (CloudKit, your container) and Push Notifications. (2) The record type `SealedBatch` exists in Development once the self-test or any signed Debug run saved a record; open CloudKit Console › Schema › `SealedBatch` and check the six fields (`blob` bytes, `asset` asset, `group` bytes, `device` int64, `seqFrom` int64, `seqTo` int64). (3) Press "Deploy Schema Changes" to copy the schema to Production (records are not copied; Production is forward-only, so do this only when the fields are final). (4) Release builds use `IMM_CLOUDKIT_ENVIRONMENT = Production` and `IMM_APS_ENVIRONMENT = production`; `Tools/release.sh` refuses an export without them. (5) On the first Production run with two devices, check that pushes arrive (the engine falls back to fetching on launch, unlock and wake).
+
+## iPhone companion
+
+`IMMPhone` is the iPhone app (iOS 26, iPhone only, portrait). It pairs with IMM on the Mac and keeps an encrypted copy of the ledger. Code: `Packages/IMMKit/Sources/IMMCompanion/` (model and screens, also built and tested on macOS) and `Phone/` (the `@main` app, the QR scanner, `Info.plist`, `IMMPhone.entitlements`, `Assets.xcassets`). Build settings: `Config/Phone.xcconfig`; bundle id `dev.gasi.imm` (the same App ID as the Mac app), team `HHK7S6D2TR`.
+
+### Building
+
+```sh
+xcodegen generate
+xcodebuild -project IMM.xcodeproj -scheme IMMPhone -configuration Debug \
+  -destination 'generic/platform=iOS' -derivedDataPath build/dd-phone \
+  CODE_SIGNING_ALLOWED=NO build
+```
+
+This is what CI runs. It needs no account but produces an app that cannot be installed.
+
+### Running on a device
+
+Open `IMM.xcodeproj`, pick the `IMMPhone` scheme and your iPhone, and run. Debug uses automatic signing with the team (Xcode signed in to an account that can provision `dev.gasi.imm`; the iPhone needs Developer Mode and must be registered). Or on the command line:
+
+```sh
+xcodebuild -project IMM.xcodeproj -scheme IMMPhone -configuration Debug \
+  -destination 'generic/platform=iOS' -derivedDataPath build/dd-phone \
+  -allowProvisioningUpdates -allowProvisioningDeviceRegistration build
+```
+
+The app needs the camera (pairing QR code), Face ID and the local network (to reach the Mac). Pairing and sync run over Tailscale like the Mac-to-Mac sync (see "Sync over Tailscale"): Tailscale must be running on the iPhone. The keychain access group is `$(AppIdentifierPrefix)dev.gasi.imm`.
+
+### TestFlight
+
+The `testflight` job of the `Release` workflow runs `Tools/release-ios.sh --upload` next to the macOS release job; neither waits for the other. It uses the same version (`IMM_VERSION`) and build number (commit count of `HEAD`) rules as `Tools/release.sh`, signs manually with Apple Distribution and uploads to App Store Connect with `xcodebuild -exportArchive` (export method `app-store-connect`, destination `upload`).
+
+One-time setup: create the app record for `dev.gasi.imm` in App Store Connect by hand (the API cannot create apps), add testers to TestFlight, and add the secrets below. Builds appear in TestFlight after Apple's processing.
+
+| Secret | Content |
+| --- | --- |
+| `IOS_DIST_P12`, `IOS_DIST_PASSWORD` | Apple Distribution certificate and key, base64 .p12 (build it with `/usr/bin/openssl`, like the Mac certificate) |
+| `IOS_PROVISION_PROFILE` | base64 of the manually managed App Store profile `IMM iOS App Store (CI)` for `dev.gasi.imm`. It expires with the certificate |
+| `MACOS_NOTARY_KEY`, `MACOS_NOTARY_KEY_ID`, `MACOS_NOTARY_ISSUER_ID` | The App Store Connect API key the Mac release already uses; it uploads the build |
+
+`Tools/release-ios.sh` also runs locally:
+
+```sh
+Tools/release-ios.sh            # archive and export build/release-ios/IMM.ipa (automatic signing)
+Tools/release-ios.sh --upload   # archive and upload to TestFlight; needs ASC_KEY_PATH, ASC_KEY_ID, ASC_ISSUER_ID
+```
+
+Environment variables (documented at the top of the script): `IMM_VERSION`, `IMM_BUILD`, `IMM_PHONE_PROFILE` (manual signing with that profile UUID instead of automatic signing), `ASC_KEY_PATH`/`ASC_KEY_ID`/`ASC_ISSUER_ID`. Output is under `build/release-ios/`.
 
 ## Strings
 

@@ -27,6 +27,7 @@
 - **Transfers and scheduled payments** with TAN approval (simulated by the demo bank; with real banks the payment controls show "Soon" until sending is built).
 - **Your data stays yours:** one encrypted `.imm` database you create and unlock with a password or Touch ID. IMM locks itself after inactivity or when your Mac sleeps.
 - **Sync between your own devices** over [Tailscale](https://tailscale.com), end-to-end encrypted, with an optional encrypted iCloud relay for when the other device is asleep. The Mac never listens on your Wi-Fi.
+- **iPhone companion** (TestFlight): pair it with IMM on your Mac by scanning a code, then see net worth, accounts and transactions and sort bookings into categories or add notes; edits sync back. Its copy of the ledger is encrypted and opens with Face ID or your passcode. Bank access stays on the Mac, and the iPhone syncs only while the app is open and Tailscale is on.
 - Native SwiftUI, light and dark appearance, window sizes down to 1024 × 720.
 
 ## Status and limitations

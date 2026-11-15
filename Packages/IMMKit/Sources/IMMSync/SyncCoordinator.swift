@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import Foundation
 import GRDB
@@ -22,6 +23,8 @@ actor SyncCoordinator: AgentAppEndpoint {
     private let resolveHost: @Sendable (String) async -> String
     private let report: @Sendable (SyncUpdate) -> Void
     private let publishDelay: Duration
+    /// The Mac's display name shown to the phone in the pairing QR.
+    private let deviceName: String?
     private let relayProvider: any RelayProviding
     /// The relay's durable state lives in the vault; closed by `requestStop()` so late CloudKit callbacks cannot touch a closed pool.
     private nonisolated let relayPersistence: LedgerRelayPersistence
@@ -54,11 +57,12 @@ actor SyncCoordinator: AgentAppEndpoint {
     }
 
     init(
-        engine: SyncEngine, publishDelay: Duration = .milliseconds(300),
+        engine: SyncEngine, publishDelay: Duration = .milliseconds(300), deviceName: String? = nil,
         makeClient: @escaping @Sendable (any AgentAppEndpoint) -> AgentXPCClient,
         resolveHost: @escaping @Sendable (String) async -> String, relayProvider: any RelayProviding = NoRelayProvider(),
         report: @escaping @Sendable (SyncUpdate) -> Void
     ) {
+        self.deviceName = deviceName
         self.engine = engine
         self.relayProvider = relayProvider
         relayPersistence = LedgerRelayPersistence(ledger: engine.ledger)
@@ -459,7 +463,8 @@ actor SyncCoordinator: AgentAppEndpoint {
         let display = await resolveHost(host)
         let offer = PairingOffer(
             qrPayload: PairingPayload.make(
-                node: identity.nodeID, agentKey: status.staticPublicKey, secret: secret, expiry: expiry, host: display, port: port),
+                node: identity.nodeID, agentKey: status.staticPublicKey, secret: secret, expiry: expiry, host: display, port: port,
+                name: deviceName),
             code: secret.code, expiry: expiry, host: display, port: port, agentKey: status.staticPublicKey)
         self.offer = offer
         pairingEvent = nil
@@ -605,3 +610,4 @@ private final class OnceVoid: @unchecked Sendable {
         taken?.resume()
     }
 }
+#endif

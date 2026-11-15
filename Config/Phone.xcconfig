@@ -1,0 +1,24 @@
+// Build settings of the IMMPhone target (all configurations). Product name, bundle id, version and
+// build number come from the project-level Config/Base.xcconfig; this file overrides what is
+// macOS-specific there.
+INFOPLIST_FILE = Phone/Info.plist
+CODE_SIGN_ENTITLEMENTS = Phone/IMMPhone.entitlements
+TARGETED_DEVICE_FAMILY = 1
+IPHONEOS_DEPLOYMENT_TARGET = 26.0
+SUPPORTS_MACCATALYST = NO
+SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO
+ENABLE_HARDENED_RUNTIME = NO
+
+// Debug: automatic signing with the team, to run on a device from Xcode. Tools/release-ios.sh on CI
+// sets IMM_PHONE_SIGN_STYLE / IMM_PHONE_SIGN_IDENTITY / IMM_PHONE_PROFILE (manual Apple
+// Distribution signing, no Xcode account). Plain CODE_SIGN_* overrides on the command line would
+// also reach the Swift package targets, which cannot be signed manually.
+IMM_PHONE_SIGN_STYLE = Automatic
+IMM_PHONE_SIGN_IDENTITY = Apple Development
+IMM_PHONE_PROFILE =
+CODE_SIGN_STYLE = $(IMM_PHONE_SIGN_STYLE)
+CODE_SIGN_IDENTITY = $(IMM_PHONE_SIGN_IDENTITY)
+DEVELOPMENT_TEAM = HHK7S6D2TR
+
+// Last, so Local.xcconfig (git-ignored, for forks) overrides the values above.
+#include? "Local.xcconfig"

@@ -7,7 +7,11 @@ public enum SyncedFolderDetector {
         if let entry = getpwuid(getuid()), let directory = entry.pointee.pw_dir {
             return URL(fileURLWithPath: String(cString: directory), isDirectory: true)
         }
+        #if os(macOS)
         return FileManager.default.homeDirectoryForCurrentUser
+        #else
+        return URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)
+        #endif
     }
 
     /// True for iCloud (ubiquitous item or `Library/Mobile Documents`), File Provider folders

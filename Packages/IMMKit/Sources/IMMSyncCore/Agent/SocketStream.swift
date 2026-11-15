@@ -1,3 +1,4 @@
+#if os(macOS)
 import Darwin
 import Foundation
 
@@ -130,3 +131,4 @@ public final class SocketStream: ByteStream, @unchecked Sendable {
         shutdownSocket()
     }
 }
+#endif

@@ -4,7 +4,8 @@ name: Release
 # CI runs first; then Tools/release.sh archives, signs with Developer ID, notarizes and writes the
 # appcast, and this workflow publishes IMM-<version>.dmg (first install), IMM-<version>.zip and
 # appcast.xml (Sparkle updates) as GitHub release v<version>. The app's Sparkle feed is
-# releases/latest/download/appcast.xml (Config/Base.xcconfig).
+# releases/latest/download/appcast.xml (Config/Base.xcconfig). A parallel job builds the iPhone
+# app with Tools/release-ios.sh and uploads it to TestFlight.
 on:
   workflow_dispatch:
     inputs:
@@ -128,3 +129,84 @@ jobs:
         run: |
           [[ -n "${SIGNING_KEYCHAIN:-}" ]] && security delete-keychain "$SIGNING_KEYCHAIN" || true
           rm -f "$RUNNER_TEMP/notary.p8" "$RUNNER_TEMP/sparkle.key" "$RUNNER_TEMP/sign.p12" "${PROFILE_PATH:-/nonexistent}"
+
+  # Uploads the iPhone app to TestFlight. Independent of the macOS release job: neither waits for the
+  # other. The first upload needs the App Store Connect app record for dev.gasi.imm, created once by
+  # hand in App Store Connect (the API cannot create apps).
+  testflight:
+    name: Build, upload to TestFlight
+    needs: test
+    runs-on: xcode-27
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Tools/release-ios.sh numbers builds (CFBundleVersion) by commit count.
+          fetch-depth: 0
+
+      - name: Version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then version="${GITHUB_REF_NAME#v}"; else version="${INPUT_VERSION#v}"; fi
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Not a version: $version" >&2; exit 1; }
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+          echo "Uploading $version"
+
+      - name: Install tools
+        run: brew install xcodegen
+
+      # Manual App Store signing: no Xcode account on the runner. The profile is the manually
+      # managed "IMM iOS App Store (CI)" (App Store, dev.gasi.imm); it expires with the certificate.
+      - name: Install signing material
+        env:
+          IOS_DIST_P12: ${{ secrets.IOS_DIST_P12 }}
+          IOS_DIST_PASSWORD: ${{ secrets.IOS_DIST_PASSWORD }}
+          IOS_PROVISION_PROFILE: ${{ secrets.IOS_PROVISION_PROFILE }}
+          MACOS_NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY }}
+        run: |
+          keychain="$RUNNER_TEMP/imm-ios-signing.keychain-db"
+          keychain_password="$(uuidgen)"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          base64 --decode <<<"$IOS_DIST_P12" >"$RUNNER_TEMP/ios-dist.p12"
+          security import "$RUNNER_TEMP/ios-dist.p12" -k "$keychain" -P "$IOS_DIST_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          rm -f "$RUNNER_TEMP/ios-dist.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$keychain_password" "$keychain" >/dev/null
+          # shellcheck disable=SC2046 # one keychain path per word; they contain no spaces
+          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$keychain"
+
+          profiles="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
+          mkdir -p "$profiles"
+          base64 --decode <<<"$IOS_PROVISION_PROFILE" >"$RUNNER_TEMP/imm-ios.mobileprovision"
+          uuid="$(security cms -D -i "$RUNNER_TEMP/imm-ios.mobileprovision" | plutil -extract UUID raw -o - -)"
+          mv "$RUNNER_TEMP/imm-ios.mobileprovision" "$profiles/$uuid.mobileprovision"
+
+          ( umask 077
+            printf '%s' "$MACOS_NOTARY_KEY" >"$RUNNER_TEMP/asc.p8" )
+
+          {
+            echo "IMM_PHONE_PROFILE=$uuid"
+            echo "SIGNING_KEYCHAIN=$keychain"
+            echo "PROFILE_PATH=$profiles/$uuid.mobileprovision"
+          } >>"$GITHUB_ENV"
+
+      # The App Store Connect API key that notarizes the Mac release also uploads the build.
+      - name: Build, sign, upload
+        env:
+          IMM_VERSION: ${{ steps.version.outputs.version }}
+          ASC_KEY_PATH: ${{ runner.temp }}/asc.p8
+          ASC_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+        run: Tools/release-ios.sh --upload
+
+      - name: Remove signing material
+        if: always()
+        run: |
+          [[ -n "${SIGNING_KEYCHAIN:-}" ]] && security delete-keychain "$SIGNING_KEYCHAIN" || true
+          rm -f "$RUNNER_TEMP/asc.p8" "$RUNNER_TEMP/ios-dist.p12" "$RUNNER_TEMP/imm-ios.mobileprovision" "${PROFILE_PATH:-/nonexistent}"

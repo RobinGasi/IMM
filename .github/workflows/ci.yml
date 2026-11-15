@@ -74,6 +74,25 @@ jobs:
           xcodebuild -project IMM.xcodeproj -scheme IMM -configuration Debug-Unsigned \
             -destination 'platform=macOS' -derivedDataPath build/dd build
 
+  build-phone:
+    name: Build iPhone app (unsigned)
+    runs-on: xcode-27
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build IMMPhone
+        run: |
+          xcodebuild -project IMM.xcodeproj -scheme IMMPhone -configuration Debug \
+            -destination 'generic/platform=iOS' -derivedDataPath build/dd-phone \
+            CODE_SIGNING_ALLOWED=NO build
+
   secrets:
     name: Secret scan
     runs-on: ubuntu-latest

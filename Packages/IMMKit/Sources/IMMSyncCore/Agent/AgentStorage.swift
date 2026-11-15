@@ -1,3 +1,4 @@
+#if os(macOS)
 import CryptoKit
 import Foundation
 
@@ -123,3 +124,4 @@ public struct AgentStorage: Sendable {
         guard rename(temp.path, url.path) == 0 else { throw AgentError.io("rename: \(String(cString: strerror(errno)))") }
     }
 }
+#endif

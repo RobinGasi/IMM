@@ -1,4 +1,6 @@
+#if os(macOS)
 import AppKit
+#endif
 import CloudKit
 import Foundation
 import Security
@@ -16,7 +18,9 @@ public enum CloudKitAvailability {
 
     /// The first container id of `com.apple.developer.icloud-container-identifiers`, when the process is entitled for CloudKit
     /// (`com.apple.developer.icloud-services` contains `CloudKit`). Nothing here touches CloudKit.
+    /// iOS cannot read its own entitlements (no `SecTask`), so it reports `nil`: the iPhone companion syncs over Tailscale only.
     public static var entitledContainer: String? {
+        #if os(macOS)
         guard let task = SecTaskCreateFromSelf(nil) else { return nil }
         guard let services = SecTaskCopyValueForEntitlement(task, "com.apple.developer.icloud-services" as CFString, nil) as? [String],
               services.contains("CloudKit") || services.contains("CloudKit-Anonymous"),
@@ -25,12 +29,19 @@ public enum CloudKitAvailability {
               let container = containers.first
         else { return nil }
         return container
+        #else
+        return nil
+        #endif
     }
 
     /// Whether the process may receive CloudKit's silent pushes (`aps-environment`).
     public static var canReceivePushes: Bool {
+        #if os(macOS)
         guard let task = SecTaskCreateFromSelf(nil) else { return false }
         return SecTaskCopyValueForEntitlement(task, "com.apple.developer.aps-environment" as CFString, nil) != nil
+        #else
+        return false
+        #endif
     }
 
     public static let unsignedMessage = "iCloud relay needs a signed build of IMM."
@@ -57,6 +68,7 @@ public enum CloudKitAvailability {
     }
 }
 
+#if os(macOS)
 /// CloudKit's silent pushes reach a Mac app only when it registered with APNs: `CKSyncEngine` creates the subscription and
 /// handles the notification itself (no `application(_:didReceiveRemoteNotification:)` forwarding is needed), but without
 /// `registerForRemoteNotifications()` pushes arrive late or not at all on macOS. Needs the `aps-environment` entitlement, so
@@ -71,3 +83,4 @@ enum RemoteNotificationRegistration {
         NSApplication.shared.registerForRemoteNotifications()
     }
 }
+#endif

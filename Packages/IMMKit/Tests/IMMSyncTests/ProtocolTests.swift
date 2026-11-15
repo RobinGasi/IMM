@@ -295,6 +295,17 @@ import Testing
         #expect(Set(json.keys) == ["v", "device", "agent", "secret", "expiry", "host", "port"])
     }
 
+    @Test func qrPayloadCarriesTheMacName() throws {
+        let secret = PairingSecret.generate()
+        let agent = Data(repeating: 9, count: 32)
+        let named = PairingPayload.make(node: 1, agentKey: agent, secret: secret, expiry: Date(), host: "h", port: 1, name: "Robin's MacBook")
+        #expect(try PairingInvite(parsing: named).hubName == "Robin's MacBook")
+        let plain = PairingPayload.make(node: 1, agentKey: agent, secret: secret, expiry: Date(), host: "h", port: 1)
+        #expect(try PairingInvite(parsing: plain).hubName == nil)
+        let json = try #require(JSONSerialization.jsonObject(with: Data(plain.utf8)) as? [String: Any])
+        #expect(json["name"] == nil)
+    }
+
     @Test func offerRendersAQRImage() throws {
         let offer = PairingOffer(
             qrPayload: PairingPayload.make(node: 1, agentKey: Data(repeating: 7, count: 32), secret: .generate(), expiry: Date(), host: "h", port: 1),

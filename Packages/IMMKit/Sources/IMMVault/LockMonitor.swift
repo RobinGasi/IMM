@@ -1,4 +1,6 @@
+#if os(macOS)
 import AppKit
+#endif
 import Foundation
 
 public enum LockReason: Equatable, Sendable {
@@ -9,6 +11,7 @@ public enum LockReason: Equatable, Sendable {
 
 /// Decides when the app must lock: idle time without input inside IMM, and system sleep / screen lock events.
 /// After it reports a reason it stops itself; call `start()` again after the next unlock.
+/// On iOS only the idle timer runs (input monitoring and sleep notifications are macOS-only); `noteActivity()` is called by the host.
 @MainActor
 public final class LockMonitor {
     /// `nil` = never lock on inactivity.
@@ -43,11 +46,13 @@ public final class LockMonitor {
         fired = false
         lastActivity = now()
 
+        #if os(macOS)
         let mask: NSEvent.EventTypeMask = [.keyDown, .leftMouseDown, .rightMouseDown, .scrollWheel, .mouseMoved]
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { [weak self] event in
             MainActor.assumeIsolated { self?.noteActivity() }
             return event
         }
+        #endif
 
         let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.checkIdle() }
@@ -56,16 +61,20 @@ public final class LockMonitor {
         RunLoop.main.add(timer, forMode: .common)
         self.timer = timer
 
+        #if os(macOS)
         let workspace = NSWorkspace.shared.notificationCenter
         for name in [NSWorkspace.willSleepNotification, NSWorkspace.screensDidSleepNotification, NSWorkspace.sessionDidResignActiveNotification] {
             observe(name, on: workspace)
         }
         observe(Notification.Name("com.apple.screenIsLocked"), on: DistributedNotificationCenter.default())
+        #endif
     }
 
     public func stop() {
         running = false
+        #if os(macOS)
         if let eventMonitor { NSEvent.removeMonitor(eventMonitor) }
+        #endif
         eventMonitor = nil
         timer?.invalidate()
         timer = nil

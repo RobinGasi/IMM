@@ -1,9 +1,14 @@
+#if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 import SwiftUI
 
 /// Colours the components derive from tokens (Tailwind `/NN` alpha modifiers and `color-mix`).
 /// They follow the same light/dark switching as the generated tokens.
 extension IMMColor {
+    #if canImport(AppKit)
     static func dynamicNSColor(light: IMMRGBA, dark: IMMRGBA) -> NSColor {
         NSColor(name: nil) { appearance in
             let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
@@ -15,6 +20,18 @@ extension IMMColor {
     static func makeDynamic(light: IMMRGBA, dark: IMMRGBA) -> Color {
         Color(nsColor: dynamicNSColor(light: light, dark: dark))
     }
+    #elseif canImport(UIKit)
+    static func dynamicUIColor(light: IMMRGBA, dark: IMMRGBA) -> UIColor {
+        UIColor { traits in
+            let c = traits.userInterfaceStyle == .dark ? dark : light
+            return UIColor(red: c.r, green: c.g, blue: c.b, alpha: c.a)
+        }
+    }
+
+    static func makeDynamic(light: IMMRGBA, dark: IMMRGBA) -> Color {
+        Color(uiColor: dynamicUIColor(light: light, dark: dark))
+    }
+    #endif
 
     private static func rgba(_ token: String, dark: Bool, alpha: Double) -> IMMRGBA {
         guard let c = resolved(token, dark: dark) else { return IMMRGBA(r: 1, g: 0, b: 1, a: 1) }

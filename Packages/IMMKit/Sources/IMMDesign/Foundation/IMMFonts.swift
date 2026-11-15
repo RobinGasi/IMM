@@ -1,4 +1,8 @@
+#if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 import CoreText
 import Foundation
 
@@ -40,6 +44,10 @@ public enum IMMFonts {
     /// True when a font with this PostScript name resolves after registration.
     public static func isAvailable(postScriptName: String) -> Bool {
         registerIfNeeded()
+        #if canImport(AppKit)
         return NSFont(name: postScriptName, size: 12) != nil
+        #else
+        return UIFont(name: postScriptName, size: 12) != nil
+        #endif
     }
 }

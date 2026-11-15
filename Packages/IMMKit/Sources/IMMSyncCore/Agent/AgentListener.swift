@@ -1,3 +1,4 @@
+#if os(macOS)
 import Darwin
 import Foundation
 
@@ -170,3 +171,4 @@ public final class AgentListener: @unchecked Sendable {
         if changed { onState(.failed(reason)) }
     }
 }
+#endif

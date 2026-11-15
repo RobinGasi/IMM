@@ -1,4 +1,8 @@
+#if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 import SwiftUI
 
 /// A named text style from the design inventory (size, weight, tracking, line height).
@@ -56,18 +60,30 @@ public struct IMMFont: Sendable, Equatable {
         return tabularDigits ? base.monospacedDigit() : base
     }
 
+    #if canImport(AppKit)
     /// The AppKit font, nil when the font files are not registered.
     public var nsFont: NSFont? {
         IMMFonts.registerIfNeeded()
         return NSFont(name: postScriptName, size: size)
     }
+    #elseif canImport(UIKit)
+    /// The UIKit font, nil when the font files are not registered.
+    public var uiFont: UIFont? {
+        IMMFonts.registerIfNeeded()
+        return UIFont(name: postScriptName, size: size)
+    }
+    #endif
 
     /// Tracking in points.
     public var trackingPoints: CGFloat { size * tracking }
 
-    /// Height of one line as SwiftUI lays the font out (AppKit's default line height, a whole number).
+    /// Height of one line as SwiftUI lays the font out (the platform's default line height, a whole number).
     public var naturalLineHeight: CGFloat {
+        #if canImport(AppKit)
         if let f = nsFont { return NSLayoutManager().defaultLineHeight(for: f) }
+        #elseif canImport(UIKit)
+        if let f = uiFont { return f.lineHeight.rounded(.up) }
+        #endif
         return size * 1.2
     }
 

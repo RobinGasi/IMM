@@ -1,6 +1,7 @@
 import Darwin
 import Foundation
 import IMMSyncCore
+#if os(macOS)
 import ServiceManagement
 
 public enum AgentRegistrationStatus: Sendable, Equatable {
@@ -39,6 +40,7 @@ public struct SMAppServiceRegistrar: AgentRegistrar {
     public func unregister() async throws { try await service.unregister() }
     public func openApprovalSettings() { SMAppService.openSystemSettingsLoginItems() }
 }
+#endif
 
 /// Reverse DNS of a tailnet address: Tailscale's resolver answers `*.ts.net` names for 100.x addresses.
 public enum MagicDNS {

@@ -1,3 +1,4 @@
+#if os(macOS)
 import CryptoKit
 import Foundation
 
@@ -670,3 +671,4 @@ final class ReplayFirstStream: ByteStream, @unchecked Sendable {
 
     func close() async { await base.close() }
 }
+#endif

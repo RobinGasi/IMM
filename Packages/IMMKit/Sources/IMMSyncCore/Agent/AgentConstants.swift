@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 
 /// Names shared by the app, the agent bundle and the build files (`Agent/`, `project.yml`). A fork with another team or
@@ -29,3 +30,4 @@ public enum AgentError: Error, Equatable, Sendable {
     case notAttached
     case io(String)
 }
+#endif
