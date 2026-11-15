@@ -1,0 +1,2 @@
+# Test fixture login id (not a secret) in commit 9b1a69c; renamed afterwards.
+9b1a69cebee84d75a7d5db2e2e8ce1d3edf95ffe:Packages/IMMKit/Tests/IMMBankingTests/ImportTests.swift:generic-api-key:94
