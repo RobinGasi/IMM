@@ -2,8 +2,9 @@ import AppKit
 import IMMBanking
 import SwiftUI
 
-/// The menu bar. IMM: Check for Updates…, Settings… (⌘,), Lock Database (⌘L). File: New Transfer (⌘N),
-/// Open Database… (⌘O). View: Ask or Search (⌘K), Sync (⌘R). Debug builds add a Debug menu.
+/// The menu bar. IMM: Check for Updates…, Settings… (⌘,), Lock Database (⌘L). File: New Transfer (⌘N), New Booking… (⇧⌘B),
+/// New Manual Account…, New Database… (⇧⌘N), Open Database… (⌘O). View: Ask or Search (⌘K), Sync (⌘R). Debug builds add a
+/// Debug menu.
 public struct AppCommands: Commands {
     private let model: AppModel
 
@@ -36,6 +37,14 @@ public struct AppCommands: Commands {
                 : String(localized: "New Transfer (Soon)", bundle: .module)) { model.openNewTransfer() }
                 .keyboardShortcut("n", modifiers: .command)
                 .disabled(!isReady || !model.paymentsAvailable)
+            Button(String(localized: "New Booking…", bundle: .module)) { model.openNewManualBooking() }
+                .keyboardShortcut("b", modifiers: [.command, .shift])
+                .disabled(!isReady)
+            Button(String(localized: "New Manual Account…", bundle: .module)) { model.openNewManualAccount() }
+                .disabled(!isReady)
+            Divider()
+            Button(String(localized: "New Database…", bundle: .module)) { model.showCreateVault() }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
             Button(String(localized: "Open Database…", bundle: .module)) { model.chooseDatabase() }
                 .keyboardShortcut("o", modifiers: .command)
         }

@@ -2,13 +2,16 @@ import IMMBanking
 import IMMDesign
 import SwiftUI
 
-/// Setup step 2: "Add your first account". Only the Bank tab works; the search filters the connector's
-/// directory live (name, city and bank code); Continue opens the sign-in for the chosen bank.
+/// Setup step 2: "Add your first account". The Bank tab searches the connector's directory live (name, city
+/// and bank code) and Continue opens the sign-in for the chosen bank; without bank access it explains that
+/// connecting comes later. The Manual account tab creates an account by hand and finishes setup. Credit card
+/// and PayPal & wallets are marked "Soon". Back closes the empty database and returns to Create vault.
 ///
 /// `Onboarding2AddBankSetup.tsx`.
 public struct AddBankScreen: View {
     @Environment(AppModel.self) private var model
 
+    @State private var tab: Tab = .bank
     @State private var query: String
     @State private var banks: [BankDirectoryEntry]
     @State private var selection: BankDirectoryEntry?
@@ -43,13 +46,19 @@ public struct AddBankScreen: View {
 
     // MARK: Content
 
+    private var subtitle: Text {
+        showsBankSearch
+            ? Text("IMM talks to your bank directly via FinTS, with no third party in between.", bundle: .module)
+            : Text("Enter the account yourself and add its bookings by hand.", bundle: .module)
+    }
+
     private var content: some View {
         VStack(spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Add your first account", bundle: .module)
                     .immFont(IMMFont.titleXL.sized(24, lineHeight: 30))
                     .foregroundStyle(IMMColor.foreground)
-                Text("IMM talks to your bank directly via FinTS, with no third party in between.", bundle: .module)
+                subtitle
                     .immFont(.body)
                     .foregroundStyle(IMMColor.mutedForeground)
                     .frame(maxWidth: 520, alignment: .leading)
@@ -59,37 +68,78 @@ public struct AddBankScreen: View {
 
             VStack(alignment: .leading, spacing: 12) {
                 tabs
-                searchField
+                if showsBankSearch { searchField }
             }
             .frame(maxWidth: 640, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 8) {
-                bankList
-                Text("Can't find your bank? Search by BLZ or BIC.", bundle: .module)
-                    .immFont(.small)
-                    .foregroundStyle(IMMColor.mutedForeground)
+            switch tab {
+            case .manualAccount:
+                ManualAccountForm(
+                    submitTitle: Text("Create account", bundle: .module),
+                    onSubmit: { input in _ = try await model.createManualAccount(input) })
+                    .frame(maxWidth: 640, alignment: .leading)
+            case .bank where model.bankAccessAvailable:
+                VStack(alignment: .leading, spacing: 8) {
+                    bankList
+                    Text("Can't find your bank? Search by BLZ or BIC.", bundle: .module)
+                        .immFont(.small)
+                        .foregroundStyle(IMMColor.mutedForeground)
+                }
+                .frame(maxWidth: 640, alignment: .leading)
+            default:
+                bankUnavailablePanel
+                    .frame(maxWidth: 640, alignment: .leading)
             }
-            .frame(maxWidth: 640, alignment: .leading)
         }
         .padding(.horizontal, 32)
         .padding(.top, 40)
     }
 
-    /// Bank, Credit card, PayPal & wallets, Manual account: only Bank has a connector here.
+    /// Bank and Manual account work; Credit card and PayPal & wallets are announced as "Soon".
     private var tabs: some View {
-        SegmentedTabs(
-            selection: .constant(Tab.bank),
-            options: [
-                IMMOption(Tab.bank, Text("Bank", bundle: .module)),
-                IMMOption(Tab.creditCard, Text("Credit card", bundle: .module)),
-                IMMOption(Tab.paypalWallets, Text("PayPal & wallets", bundle: .module)),
-                IMMOption(Tab.manualAccount, Text("Manual account", bundle: .module)),
+        OnboardingTabs(
+            selection: $tab,
+            tabs: [
+                OnboardingTab(value: Tab.bank, title: Text("Bank", bundle: .module)),
+                OnboardingTab(
+                    value: Tab.creditCard, title: Text("Credit card", bundle: .module), soonHelp: soonHelp),
+                OnboardingTab(
+                    value: Tab.paypalWallets, title: Text("PayPal & wallets", bundle: .module), soonHelp: soonHelp),
+                OnboardingTab(value: Tab.manualAccount, title: Text("Manual account", bundle: .module)),
             ]
         )
-        .inertControl()
+    }
+
+    private var soonHelp: String {
+        String(localized: "Credit cards and PayPal come in a later version.", bundle: .module)
     }
 
     private enum Tab: Hashable { case bank, creditCard, paypalWallets, manualAccount }
+
+    /// The bank search, list and Continue belong to the Bank tab when the build can reach banks.
+    private var showsBankSearch: Bool { tab == .bank && model.bankAccessAvailable }
+
+    /// Shown on the Bank tab of a build without bank access, instead of the search and the list.
+    private var bankUnavailablePanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Connecting to your bank is coming soon", bundle: .module)
+                .immFont(.titleMD)
+                .foregroundStyle(IMMColor.foreground)
+            Text(
+                "IMM will talk to German banks directly over FinTS once its registration is approved. Until then, add a manual account and enter bookings yourself.",
+                bundle: .module
+            )
+            .immFont(.body)
+            .foregroundStyle(IMMColor.mutedForeground)
+            .fixedSize(horizontal: false, vertical: true)
+            Button { tab = .manualAccount } label: { Text("Add a manual account", bundle: .module) }
+                .immButtonStyle(.outline)
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: IMMRadius.lg, style: .continuous).strokeBorder(IMMColor.border, lineWidth: 1))
+    }
 
     private var searchField: some View {
         InputGroup(
@@ -141,14 +191,16 @@ public struct AddBankScreen: View {
 
     private var footer: some View {
         HStack {
-            // The database already exists at this step, so there is no earlier screen to return to.
-            Button { } label: { Text("Back", bundle: .module) }
+            // The database was just created and is still empty: Back closes and forgets it and returns to Create vault.
+            Button { model.abandonNewDatabase() } label: { Text("Back", bundle: .module) }
                 .immButtonStyle(.ghost)
-                .inertControl()
                 .padding(.leading, -8)
             Spacer()
-            OnboardingPrimaryButton(title: Text("Continue", bundle: .module), enabled: selection != nil) {
-                model.bank.selectedBank = selection
+            // The Manual account tab has its own submit button, and without bank access there is nothing to continue with.
+            if showsBankSearch {
+                OnboardingPrimaryButton(title: Text("Continue", bundle: .module), enabled: selection != nil) {
+                    model.bank.selectedBank = selection
+                }
             }
         }
         .padding(.horizontal, 160)

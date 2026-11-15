@@ -17,14 +17,15 @@
 </p>
 
 > [!IMPORTANT]
-> **Early preview.** Released builds still connect only to a demo bank that loads a sample ledger, so everything in the screenshot is made-up data. A read-only FinTS connector for German banks (accounts, balances, statements) is built and switches on once IMM's FinTS product registration with the Deutsche Kreditwirtschaft is granted.
+> **Early preview.** Released builds can't connect to banks yet: add a manual account and enter bookings yourself. A read-only FinTS connector for German banks (accounts, balances, statements) is built and switches on once IMM's FinTS product registration with the Deutsche Kreditwirtschaft is granted. The screenshot shows the demo ledger used in development builds.
 
 ## What IMM does
 
 - **Overview** of net worth, spending this month against your average, upcoming payments and what needs attention.
 - **Transactions** for every account or all of them, with running balances, filters, search and an inspector for categories, notes and rules.
 - **Budgets, standing orders, contracts, a depot, categories,** a monthly review and a tax-return overview, all computed from one ledger.
-- **Transfers and scheduled payments** with TAN approval (simulated by the demo bank; with real banks the payment controls show "Soon" until sending is built).
+- **Manual accounts:** create an account with an opening balance and enter bookings by hand (File › New Booking…), with categories and notes like any other booking.
+- **Transfers and scheduled payments** with TAN approval (simulated by the demo bank in development builds; with real banks the payment controls show "Soon" until sending is built).
 - **Your data stays yours:** one encrypted `.imm` database you create and unlock with a password or Touch ID. IMM locks itself after inactivity or when your Mac sleeps.
 - **Sync between your own devices** over [Tailscale](https://tailscale.com), end-to-end encrypted, with an optional encrypted iCloud relay for when the other device is asleep. The Mac never listens on your Wi-Fi.
 - **iPhone companion** (TestFlight): pair it with IMM on your Mac by scanning a code, then see net worth, accounts and transactions and sort bookings into categories or add notes; edits sync back. Its copy of the ledger is encrypted and opens with Face ID or your passcode. Bank access stays on the Mac, and the iPhone syncs only while the app is open and Tailscale is on.
@@ -32,8 +33,8 @@
 
 ## Status and limitations
 
-- **Bank access.** Builds without a FinTS product registration number use the demo connector, there for development and screenshots: every bank in the list answers, any login works, and finishing onboarding loads one sample ledger with five accounts; payments are approved after three seconds and booked. With a registration number and the FinTS bank list, IMM uses its FinTS connector instead: read-only (accounts, balances, statements as camt or MT940), sign-in approved in the bank's app (pushTAN and other decoupled methods only; chipTAN, photoTAN and smsTAN are not supported), and every payment control shows "Soon". File import is planned.
-- **The demo ledger treats 12.11.2026 as "today"** while the database holds only demo data. Lock timers and sync times use the real clock.
+- **Bank access.** Released builds without a FinTS product registration number offer no bank: the Bank tab of setup says connecting is coming soon and points to manual accounts. Development (Debug) builds use the demo connector instead, there for development and screenshots: every bank in the list answers, any login works, and finishing onboarding loads one sample ledger with five accounts; payments are approved after three seconds and booked. With a registration number and the FinTS bank list, IMM uses its FinTS connector: read-only (accounts, balances, statements as camt or MT940), sign-in approved in the bank's app (pushTAN and other decoupled methods only; chipTAN, photoTAN and smsTAN are not supported), and every payment control shows "Soon". Credit cards, PayPal and file import are planned.
+- **The demo ledger treats 12.11.2026 as "today"** while the database holds only demo data (Debug builds). Lock timers and sync times use the real clock.
 - **AI screens show stored content.** Ask, Suggestions, the monthly review, Pay invoice and Tax return display prepared content; no model runs and no PDF is read.
 - **Some controls are placeholders.** Controls without a working target look as designed, do nothing and show the tooltip "Not available in this version". In Settings only Security and Sync work.
 - English UI with German money and date formats.

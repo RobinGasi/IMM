@@ -43,11 +43,15 @@ public enum Panel: Equatable, Sendable {
     case tan(TANPhase)
     /// PIN sheet under the toolbar (after a rejected PIN).
     case pin
+    /// New manual account (File menu, empty state of the manual booking panel).
+    case newManualAccount
+    /// New manual booking (File menu).
+    case newManualBooking
 
     /// Panels whose dim covers the whole window; the others dim only the content pane under the toolbar.
     public var dimsWholeWindow: Bool {
         switch self {
-        case .ask, .newTransfer: return true
+        case .ask, .newTransfer, .newManualAccount, .newManualBooking: return true
         case .tan, .pin: return false
         }
     }

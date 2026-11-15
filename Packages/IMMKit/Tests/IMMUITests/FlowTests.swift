@@ -763,12 +763,13 @@ struct SetupContext {
         expect(world.model.bank.signInState == .idle, "no sign-in yet")
     }
 
-    /// Add bank → Create vault: the database exists already, so "Back" is inert (setup resumes at Add bank).
+    /// Add bank → Create vault: "Back" closes and forgets the empty database just created (`AppModel.abandonNewDatabase()`).
     func backFromAddBank() async throws {
         let world = try await needsBankWorld()
         defer { world.finish() }
-        expect(world.model.phase == .needsBank, "Back on Add bank leaves the phase at .needsBank (the control is inert)")
-        expect(world.model.vaultURL != nil, "the database stays open")
+        world.model.abandonNewDatabase()
+        expect(world.model.phase == .noVault, "Back on Add bank returns to Create vault")
+        expect(world.model.vaultURL == nil, "the empty database is closed")
     }
 
     /// Bank login → Add bank: forgets the sign-in and the chosen bank (`BankLoginScreen.back()`).

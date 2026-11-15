@@ -482,6 +482,9 @@
     "Add a fingerprint in System Settings to use Touch ID." : {
 
     },
+    "Add a manual account" : {
+
+    },
     "Add a note" : {
 
     },
@@ -640,6 +643,9 @@
     "Cash" : {
 
     },
+    "Cash / wallet" : {
+
+    },
     "Cash account" : {
 
     },
@@ -730,6 +736,9 @@
     "Confirmed in S-pushTAN at %@" : {
 
     },
+    "Connecting to your bank is coming soon" : {
+
+    },
     "Continue" : {
 
     },
@@ -745,10 +754,16 @@
     "Count" : {
 
     },
+    "Counterparty" : {
+
+    },
     "Create" : {
 
     },
     "Create Database" : {
+
+    },
+    "Create account" : {
 
     },
     "Create database" : {
@@ -763,7 +778,13 @@
     "Credit card" : {
 
     },
+    "Credit cards and PayPal come in a later version." : {
+
+    },
     "Creditor ID" : {
+
+    },
+    "Current account" : {
 
     },
     "Current password" : {
@@ -838,7 +859,19 @@
     "Enter a date from today on, like 20.11.2026." : {
 
     },
+    "Enter a date like 20.11.2026." : {
+
+    },
+    "Enter an amount above zero, like 12,50." : {
+
+    },
+    "Enter an amount like 1.234,56." : {
+
+    },
     "Enter new PIN" : {
+
+    },
+    "Enter the account yourself and add its bookings by hand." : {
 
     },
     "Enter your Online-Banking PIN" : {
@@ -860,6 +893,9 @@
 
     },
     "Execution date" : {
+
+    },
+    "Expense" : {
 
     },
     "Expired %@" : {
@@ -902,6 +938,9 @@
 
     },
     "Fixed costs per month, %lld contracts" : {
+
+    },
+    "For cash, a wallet or any account you keep by hand. You add the bookings yourself." : {
 
     },
     "Forecast of the account balance" : {
@@ -975,6 +1014,9 @@
     "IMM will ask for your online-banking PIN the next time it syncs." : {
 
     },
+    "IMM will talk to German banks directly over FinTS once its registration is approved. Until then, add a manual account and enter bookings yourself." : {
+
+    },
     "IMM's sync helper needs your approval." : {
 
     },
@@ -1038,6 +1080,9 @@
 
     },
     "Last opened yesterday, %@" : {
+
+    },
+    "Leave empty to start at 0,00 €. A debt is negative, like -50." : {
 
     },
     "Leaves %@ at today's balance." : {
@@ -1157,13 +1202,28 @@
     "Never" : {
 
     },
+    "New Booking…" : {
+
+    },
+    "New Database…" : {
+
+    },
+    "New Manual Account…" : {
+
+    },
     "New Transfer" : {
 
     },
     "New Transfer (Soon)" : {
 
     },
+    "New booking" : {
+
+    },
     "New budget" : {
+
+    },
+    "New manual account" : {
 
     },
     "New password" : {
@@ -1223,6 +1283,9 @@
     "Not updated yet" : {
 
     },
+    "Note" : {
+
+    },
     "Notes" : {
 
     },
@@ -1278,6 +1341,9 @@
 
     },
     "Open existing database…" : {
+
+    },
+    "Opening balance" : {
 
     },
     "Over by %@" : {
@@ -1437,10 +1503,16 @@
         }
       }
     },
+    "Save booking" : {
+
+    },
     "Saved" : {
 
     },
     "Saved recipient, IBAN filled in from your last transfer" : {
+
+    },
+    "Savings" : {
 
     },
     "Savings plan" : {
@@ -1584,6 +1656,9 @@
 
     },
     "Starting…" : {
+
+    },
+    "Starts at %@" : {
 
     },
     "Status" : {
@@ -1945,6 +2020,9 @@
     "You appear to be offline." : {
 
     },
+    "You don't have a manual account yet. Create one first, then add its bookings here." : {
+
+    },
     "You'll confirm with pushTAN." : {
 
     },
@@ -1973,6 +2051,9 @@
 
     },
     "contract" : {
+
+    },
+    "e.g. Household cash" : {
 
     },
     "earlier today" : {

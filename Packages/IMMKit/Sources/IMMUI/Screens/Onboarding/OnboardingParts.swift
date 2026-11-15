@@ -159,3 +159,104 @@ enum OnboardingClock {
         return formatter.string(from: date)
     }
 }
+
+/// One tab of `OnboardingTabs`. `soonHelp` marks a tab that is planned but not built: it cannot be selected and
+/// carries the "Soon" badge with `soonHelp` as tooltip.
+struct OnboardingTab<Value: Hashable>: Identifiable {
+    let value: Value
+    let title: Text
+    var soonHelp: String?
+
+    var id: Value { value }
+}
+
+/// `SegmentedTabs` with tabs that are not available yet. The track and the tabs are drawn exactly as
+/// `SegmentedTabs` draws them (the design's `Tabs`: 32 px muted track, 3 px padding, active tab on `background`);
+/// a "Soon" tab is a disabled tab with the badge after its title, inside the same trigger, so the gap between
+/// triggers stays uniform and the badge belongs to its own tab.
+struct OnboardingTabs<Value: Hashable>: View {
+    @Binding var selection: Value
+    let tabs: [OnboardingTab<Value>]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(tabs) { tab in
+                if let help = tab.soonHelp {
+                    trigger(tab, soon: true).inertControl(help)
+                } else {
+                    trigger(tab, soon: false)
+                }
+            }
+        }
+        .padding(3)
+        .frame(height: 32)
+        .background(RoundedRectangle(cornerRadius: IMMRadius.lg, style: .continuous).fill(IMMColor.muted))
+        .fixedSize()
+    }
+
+    private func trigger(_ tab: OnboardingTab<Value>, soon: Bool) -> some View {
+        Button {
+            if !soon { selection = tab.value }
+        } label: {
+            HStack(spacing: 5) {
+                tab.title
+                if soon {
+                    Badge(verbatim: String(localized: "Soon", bundle: .module), variant: .outline)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
+        }
+        .buttonStyle(OnboardingTabStyle(selected: tab.value == selection))
+        .focusEffectDisabled()
+        .accessibilityAddTraits(tab.value == selection ? .isSelected : [])
+    }
+}
+
+private struct OnboardingTabStyle: ButtonStyle {
+    let selected: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        OnboardingTabBody(configuration: configuration, selected: selected)
+    }
+}
+
+private struct OnboardingTabBody: View {
+    let configuration: ButtonStyleConfiguration
+    let selected: Bool
+
+    @Environment(\.isFocused) private var isFocused
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.immDisableMotion) private var disableMotion
+    @State private var hovering = false
+
+    private var foreground: Color {
+        if configuration.isPressed { return IMMColor.accentForeground }
+        return selected || (hovering && isEnabled) ? IMMColor.foreground : IMMColor.tabText
+    }
+
+    private var fill: Color {
+        if configuration.isPressed { return IMMColor.accent }
+        return selected ? IMMColor.tabActiveFill : Color.clear
+    }
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: IMMRadius.md, style: .continuous)
+        configuration.label
+            .immFont(.smallMedium)
+            .foregroundStyle(foreground)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 2)
+            .frame(maxHeight: .infinity)
+            .background(shape.fill(fill))
+            .overlay(shape.strokeBorder(selected ? IMMColor.tabActiveBorder : Color.clear, lineWidth: 1))
+            .overlay {
+                if isFocused { shape.stroke(IMMColor.focusRingStrong, lineWidth: 3).padding(-1.5) }
+            }
+            .contentShape(shape)
+            .animation(disableMotion ? nil : Motion.ease(0.12), value: hovering)
+            .animation(disableMotion ? nil : Motion.ease(0.12), value: configuration.isPressed)
+            .animation(disableMotion ? nil : Motion.ease(0.12), value: selected)
+            .onHover { hovering = $0 }
+    }
+}

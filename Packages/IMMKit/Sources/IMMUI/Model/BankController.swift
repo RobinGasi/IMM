@@ -223,7 +223,9 @@ public final class BankController {
             return
         }
 
-        let work: [LoginWork] = loaded.logins.map { login in
+        // Logins of another connector (for example the demo bank of older versions, now under `NoBankConnector`)
+        // cannot be synced by this one: leave them alone instead of failing every sync.
+        let work: [LoginWork] = loaded.logins.filter { $0.connectorId == connector.id }.map { login in
             let own = loaded.accounts.filter { $0.bankLoginId == login.id }
             var pin = pinStore.pin(vaultID: vaultID, loginID: LoginIdentity.uuid(for: login.id)) ?? ""
             if let newPIN, rejectedLogins.isEmpty || rejectedLogins.contains(login.id) { pin = newPIN }

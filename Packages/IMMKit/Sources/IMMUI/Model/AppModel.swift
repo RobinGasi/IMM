@@ -132,8 +132,9 @@ public final class AppModel {
 
     /// - Parameters:
     ///   - connector: the bank connector; the default is `makeDefaultConnector()` (FinTS when the build has a
-    ///     registered product id, otherwise the demo bank). Debug builds launched with `-IMMDemoVault YES` always use
-    ///     the demo connector, whatever is passed, so the demo vault's logins sync against the demo data.
+    ///     registered product id, otherwise the demo bank in debug builds and none in released builds). Debug builds
+    ///     launched with `-IMMDemoVault YES` always use the demo connector, whatever is passed, so the demo vault's
+    ///     logins sync against the demo data.
     ///   - clock: time source of the inactivity timer (tests advance it by hand).
     ///   - autoStart: resolves the remembered database (and, in debug builds, the `-IMMDemoVault YES`
     ///     launch argument). Tests and previews pass `false`.
@@ -193,12 +194,17 @@ public final class AppModel {
     }
 
     /// The connector of a normal launch. FinTS when `IMMFinTSProductID` (from `IMM_FINTS_PRODUCT_ID` in the build
-    /// settings) is set and the bundled bank list loads and is not empty; otherwise the demo bank.
+    /// settings) is set and the bundled bank list loads and is not empty. Otherwise the demo bank in debug builds
+    /// (screenshots, tests, `-IMMDemoVault`) and `NoBankConnector` in released builds, which never offer the demo bank.
     public static func makeDefaultConnector(bundle: Bundle = .main) -> any BankConnector {
         let productID = (bundle.object(forInfoDictionaryKey: "IMMFinTSProductID") as? String ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !productID.isEmpty, let directory = try? FinTSBankDirectory.bundled(), !directory.isEmpty else {
+            #if DEBUG
             return DemoConnector()
+            #else
+            return NoBankConnector()
+            #endif
         }
         let version = String((bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0").prefix(5))
         return FinTSConnector(
@@ -342,6 +348,13 @@ public final class AppModel {
         if vault != nil { lock(.manual) }
         lockReason = nil
         phase = .noVault
+    }
+
+    /// "Back" on Add bank: the database created in step 1 is still empty and unused, so it is closed and no longer
+    /// remembered (a relaunch starts at Create vault instead of asking for its password). The package stays on disk.
+    public func abandonNewDatabase() {
+        bookmarks.forgetLastVault()
+        showCreateVault()
     }
 
     /// Runs the standard open panel for `.imm` packages and calls `openExisting(at:)` with the choice.
@@ -568,6 +581,10 @@ public final class AppModel {
     /// Whether the connected bank connector can send money. False for read-only connectors (FinTS):
     /// every payment entry point shows "Soon" and `openNewTransfer` does nothing.
     public var paymentsAvailable: Bool { bank.connector.supportsPayments }
+
+    /// False when the build has no way to reach banks (`NoBankConnector`): Add bank explains this and offers a
+    /// manual account instead of the bank search.
+    public var bankAccessAvailable: Bool { bank.connector.id != NoBankConnector.connectorID }
 
     public func openNewTransfer(_ draft: TransferDraft? = nil) {
         guard phase == .ready, paymentsAvailable else { return }

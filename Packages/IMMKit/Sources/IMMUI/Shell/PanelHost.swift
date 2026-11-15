@@ -6,6 +6,7 @@ import SwiftUI
 /// | Panel | width | top | dim | covers | motion |
 /// |---|---|---|---|---|---|
 /// | New transfer | min(560, W − 48) | 52 | 18 % | window | dim fade 200 ms, sheet-down 280 ms |
+/// | New manual account / booking | min(480 / 520, W − 48) | 52 | 18 % | window | like New transfer |
 /// | Ask | min(720, W − 48) | 72 | 16 % | window | dim fade 180 ms, pop-in 200 ms |
 /// | TAN sheet | min(520, pane − 48) | under toolbar | 16 % | content pane | dim fade 180 ms, sheet-down 260 ms |
 /// | PIN sheet | min(480, pane − 48) | under toolbar | 20 % | content pane | dim fade 180 ms, sheet-down 260 ms |
@@ -48,6 +49,14 @@ struct PanelHost: View {
         case .ask:
             windowPanel(dim: 0.16, dimDuration: 0.18, top: 72, width: 720, maxHeight: windowSize.height - 96, popIn: true) {
                 AskPanel()
+            }
+        case .newManualAccount:
+            windowPanel(dim: 0.18, dimDuration: 0.2, top: 52, width: 480, maxHeight: windowSize.height - 76, popIn: false) {
+                ManualAccountSheet()
+            }
+        case .newManualBooking:
+            windowPanel(dim: 0.18, dimDuration: 0.2, top: 52, width: 520, maxHeight: windowSize.height - 76, popIn: false) {
+                ManualBookingSheet()
             }
         case .tan:
             sheet(dim: 0.16, width: 520) { TANSheet() }
